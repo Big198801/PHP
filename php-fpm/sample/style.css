@@ -1,0 +1,866 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #FFF;
+    font-family: 'Lato', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.center {
+    padding-left: calc(50% - 570px);
+    padding-right: calc(50% - 570px);
+}
+
+/* шапка сайта */
+.header {
+    background-color: #222;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu_logo_search {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 41px;
+}
+
+.menu_control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    margin-top: 26px;
+    margin-bottom: 20px;
+}
+
+.menu_logo {
+    width: 44px;
+}
+
+.menu_link {
+    width: 26px;
+}
+
+.menu_link:hover path {
+    fill: #eed4d4;
+}
+
+.menu_link:active path {
+    fill: #e78383;
+}
+
+.menu_drop {
+    position: relative;
+}
+
+.menu_drop:hover .menu_nav {
+    visibility: visible;
+}
+
+.menu_nav {
+    position: absolute;
+    width: 232px;
+    background-color: #FFF;
+    padding: 32px 0 32px 32px;
+    top: 23px;
+    visibility: hidden;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.menu_title {
+    padding-bottom: 4px;
+    color: #000;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.menu_subtitle {
+    padding-top: 20px;
+    color: #F16D7F;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.menu_section {
+    list-style-type: none;
+}
+
+.menu_list {
+    padding-top: 12px;
+    padding-left: 22px;
+}
+
+.menu_nav_link {
+    color: #6F6E6E;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.menu_nav_link:hover {
+    color: #575454;
+}
+
+/* раздел промо */
+.section_promo {
+    background-color: #F1E4E6;
+    display: flex;
+    align-items: center;
+    gap: 250px;
+}
+
+.img_promo {
+    max-width: 800px;
+}
+
+.promo_content {
+    display: flex;
+    gap: 16px;
+    width: 405px;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.promo_pic {
+    width: 12px;
+    background-color: #F16D7F;
+}
+
+.promo_title {
+    color: #222;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+}
+
+.promo_subtitle {
+    color: #222;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.promo_subtitle_pink {
+    color: #F16D7F;
+}
+
+/* раздел категории */
+.section_categories {
+    margin-top: 65px;
+    display: grid;
+    grid-template-columns: repeat(3, 360px);
+    gap: 30px;
+}
+
+.item_categories {
+    display: block;
+    padding-top: 105px;
+    padding-bottom: 105px;
+    transition: transform 0.4s;
+}
+
+.item_categories:hover {
+    transform: scale(1.02);
+}
+
+.women {
+    background-image: url(img/si1.jpg);
+    background-size: 360px;
+}
+
+.men {
+    background-image: url(img/si2.jpg);
+    background-size: 360px;
+}
+
+.kids {
+    background-image: url(img/si3.jpg);
+    background-size: 360px;
+}
+
+.accesories {
+    background-image: url(img/sibig.jpg);
+    background-size: 1140px;
+}
+
+.big_item {
+    grid-column: span 3;
+    padding-top: 65px;
+    padding-bottom: 65px;
+}
+
+.categories_text {
+    color: #FFF;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.categories_title {
+    color: #F16D7F;
+    text-align: center;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+/* раздел рекомендуемое */
+.section_featured {
+    margin-top: 96px;
+}
+
+.featured_lead {
+    color: #222;
+    text-align: center;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.featured_desc {
+    margin-top: 6px;
+    text-align: center;
+    color: #9F9F9F;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.featured_items {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 360px);
+    gap: 30px;
+}
+
+.featured_item {
+    display: block;
+    transition: 0.4s linear;
+    width: 360px;
+    position: relative;
+}
+
+.featured_item:hover .featured_item_cart {
+    visibility: visible;
+}
+
+.featured_item:active .cart_product {
+    fill: #e78383;
+    color: #e78383;
+    border: 2px solid #e78383; 
+}
+
+.featured_item_cart {
+    padding: 185px 110px 186px;background-color: #3A3838;
+    position: absolute;
+    filter: opacity(80%);
+    top: 0;
+    visibility: hidden;
+}
+
+.cart_product {
+    display: flex;
+    fill: white;
+    color: white;
+    gap: 11px;
+    border: 2px solid white;    
+    justify-content: center;
+    align-items: center;
+    padding: 11px 13px 9px 13px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.featured_content {
+    display: flex;
+    flex-direction: column;
+    width: 328px;
+    gap: 16px;
+    padding: 24px 16px;
+}
+
+.featured_title {
+    color: #000;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal; 
+}
+
+.featured_text {
+    color: #5D5D5D;
+    width: 315px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.featured_price {
+    color: #F16D7F;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.featured_btn {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    margin-top: 48px;
+    border: 1px solid #FF6A6A;
+    padding: 15px 39px;
+    color: #F26376;
+    transition: color 0.1s linear;
+}
+
+.btn::after {
+    content: 'Browse All Product';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.btn:hover {
+    background-color: #F16D7F;
+    color: #FFF;
+}
+
+/* раздел преимущества */
+.section_benefit {
+    margin-top: 95px;
+    display: flex;
+    gap: 30px;
+    background-color: #222224;
+    padding-top: 103px;
+    padding-bottom: 104px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.benefit_item {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.benefit_title {
+    margin-top: 9px;
+    color: #FBFBFB;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.benefit_text {
+    width: 360px;
+    color: #FBFBFB;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+/* раздел подпишись */
+.section_subscribe {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 97px;
+    padding-bottom: 150px;
+    gap: 220px;
+    justify-content: center;
+    align-items: center;
+}
+
+.subscribe_back {
+    background: linear-gradient(50deg, #ffffff, #000000), url(img/background_subscribe.png);
+    background-size: 100cqmax;
+    background-blend-mode: screen;
+    background-position: center;
+}
+
+.subscribe_intersect {
+    display: flex;
+    gap: 30px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.subscribe_intersect_img {
+    width: 96px;
+}
+
+.subscribe_intersect_text {
+    max-width: 360px;
+    color: #222224;
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.subscribe_subscribe {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.subscribe_title {
+    color: #222224;
+    text-align: center;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 167.2%;
+}
+
+.subscribe_subtitle {
+    max-width: 557px;
+    color: #222224;
+    font-size: 18px;
+    text-align: center;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 167.2%;
+}
+
+.subscribe_label {
+    margin-top: 32px;
+    display: flex;
+}
+
+.subscribe_input {
+    width: 256px;
+    height: 50px;
+    border: none;
+    border-radius: 30px 0 0 30px;
+    color: #222224;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    background-color: #E1E1E1;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+.subscribe_btn {
+    width: 100px;
+    height: 50px;
+    background-color: #F16D7F;
+    border: none;
+    border-radius: 0 30px 30px 0;
+    color: #FFF;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.subscribe_btn:hover {
+    background-color: #E05C6E;
+}
+
+/* подвал сайта */
+.footer {
+    display: flex;
+    background-color: #222224;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer_c {
+    color: #FBFBFB;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.footer_nav {
+    display: flex;
+    gap: 7px;
+}
+
+.footer_link {
+    display: flex;
+    background-color: #FFF;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    align-items: center;
+    fill: black;
+}
+
+.footer_link:hover {
+    background-color: #F16D7F;
+    fill: white;
+}
+
+
+@media (max-width: 1024px) {
+    .center {
+        padding-left: calc(50% - 367px);
+        padding-right: calc(50% - 367px);
+    }
+
+    /* шапка сайта */
+    .header {
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+
+    .menu_control {
+        gap: 25px;
+        margin-top: 27px;
+        margin-bottom: 18px;
+    }
+
+    .menu_link {
+        width: 32px;
+    }
+
+    .cart {
+        margin-left: 17px;
+        margin-right: 9px;
+    }
+
+    .menu_nav {
+        right: 0;
+    }
+
+    /* раздел промо */
+    .section_promo {
+        gap: 130px;
+        justify-content: center;
+        padding-left: 100px;
+        padding-right: 30px;
+    }
+
+    .img_promo {
+        width: 192px;
+    }
+
+    .promo_content {
+        width: 311px;
+    }
+    
+    .promo_title {
+        font-size: 44px;
+    }
+    
+    .promo_subtitle {
+        font-size: 24px;
+    }
+
+    /* раздел категории */
+    .section_categories {
+        grid-template-columns: repeat(3, 232px);
+        gap: 20px;
+    }
+
+    .item_categories {
+        padding-top: 59px;
+        padding-bottom: 58px;
+    }
+
+    .big_item {
+        padding-top: 33px;
+        padding-bottom: 33px;
+    }
+
+    .women {
+        background-size: 232px;
+    }
+    
+    .men {
+        background-size: 232px;
+    }
+    
+    .kids {
+        background-size: 232px;
+    }
+    
+    .accesories {
+        background-size: 736px;
+    }
+    
+    /* раздел рекомендуемое */
+    .section_featured {
+        margin-top: 110px;
+    }
+    
+    .featured_desc {
+        margin-top: 3px;
+    }
+    
+    .featured_items {
+        margin-top: 73px;
+        grid-template-columns: repeat(2, 360px);
+        gap: 16px;
+    }
+
+    /* раздел преимущества */
+    .section_benefit {
+        margin-top: 65px;
+        gap: 48px;
+        padding-top: 48px;
+        padding-bottom: 64px;
+    }
+
+    /* раздел подпишись */
+    .section_subscribe {
+        padding-top: 64px;
+        padding-bottom: 140px;
+        gap: 48px;
+    }
+
+    .subscribe_back {
+        background-size: 2800px;
+        background-position-x: -480px;
+    }
+
+    /* подвал сайта */
+    .footer {
+        padding: 24px 32px;
+    }
+}
+    
+@media (max-width: 767px) {
+    .center {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    /* шапка сайта */
+    .menu_control {
+        gap: 0px;
+    }
+    
+    .reg {
+        display: none;
+    }
+
+    .cart {
+        display: none;
+    }
+
+    /* раздел промо */
+    .section_promo {
+        padding: 149px 0px;
+    }
+
+    .img_promo {
+        display: none;
+    }
+
+    .promo_content {
+        width: 311px;
+    }
+    
+    .promo_title {
+        font-size: 38px;
+    }
+    
+    .promo_subtitle {
+        font-size: 20px;
+    }
+
+    /* раздел категории */
+    .section_categories {
+        margin-top: 64px;
+        grid-template-columns: repeat(1, 343px);
+        gap: 32px;
+    }
+
+    .item_categories {
+        padding-top: 98px;
+        padding-bottom: 99px;
+    }
+
+    .big_item {
+        grid-column: span 1;
+        padding-top: 30px;
+        padding-bottom: 31px;
+    }
+
+    .women {
+        background-size: 343px;
+    }
+    
+    .men {
+        background-size: 343px;
+    }
+    
+    .kids {
+        background-size: 343px;
+    }
+    
+    .accesories {
+        background-size: 670px;
+        background-position: center;
+    }
+    
+    /* раздел рекомендуемое */
+    .section_featured {
+        margin-top: 64px;
+        margin-left: -8px;
+    }
+
+    .featured_desc {
+        margin-top: 3px;
+    }
+
+    .featured_items {
+        margin-top: 64px;
+        grid-template-columns: repeat(1, 360px);
+        gap: 16px;
+    }
+    
+    .featured_content {
+        width: 328px;
+    }
+
+    /* раздел преимущества */
+    .section_benefit {
+        margin-top: 96px;
+        gap: 47px;
+        padding-bottom: 81px;
+    }
+
+    .benefit_text {
+        width: 347px;
+    }
+
+    /* раздел подпишись */
+    .section_subscribe {
+        padding-bottom: 110px;
+        gap: 59px;
+    }
+
+    .subscribe_intersect_text {
+        font-size: 18px;
+    }
+
+    .subscribe_title {
+        line-height: 153.2%;
+    }
+
+    .subscribe_subtitle {
+        font-size: 14px;
+        line-height: 153.2%;
+    }
+
+    .subscribe_input {
+        width: 210px;
+    }
+
+    .subscribe_back {
+        background-size: 2100px;
+        background-position-x: -450px;
+    }
+
+    /* подвал сайта */
+    .footer {
+        padding: 43px 62px 9px;
+        flex-direction: column-reverse;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 374px) {
+    /* раздел категории */
+    .section_categories {
+        grid-template-columns: repeat(1, 290px);
+    }
+
+    .women {
+        background-size: 296px;
+    }
+    
+    .men {
+        background-size: 296px;
+    }
+    
+    .kids {
+        background-size: 296px;
+    }
+    
+    /* раздел рекомендуемое */
+    .featured_items {
+        grid-template-columns: repeat(1, 300px);
+    }
+
+    .featured_item {
+        width: 300px;
+    }
+
+    .img_featured {
+        width: 300px;
+    }
+           
+    .featured_content {
+        width: 268px;
+    }
+
+    .featured_text {
+        width: 280px;
+    }
+
+    .featured_item_cart {
+        padding: 147px 90px
+    }
+
+    /* раздел преимущества */
+    .benefit_text {
+        width: 300px;
+    }
+
+    /* раздел подпишись */
+    .subscribe_input {
+        width: 150px;
+    }
+
+    /* подвал сайта */
+    .footer {
+        padding: 43px 36px 9px;
+    }
+}
