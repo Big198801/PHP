@@ -33,12 +33,13 @@
 
     $a = 1;
     $b = 2;
-    $a += $b;
-    $b = $a - $b;
-    $a -= $b;
+    $a ^= $b;
+    $b = $a ^ $b;
+    $a ^= $b;
 
-    echo "\nПеременная а = " . $a . ", переменная b = " . $b;
+    // через ^
+    echo "\nПеременная а = {$a}, переменная b = {$b}";
 
-// docker run --rm -v ${pwd}/php-cli/:/cli php:8.2-cli php /cli/start.php
+// docker run --rm -v ${pwd}/php-cli/:/cli php:8.2-cli php /cli/homework1.php
 
-// docker run --rm -v ${pwd}/php-cli/:/cli php:7.4-cli php /cli/start.php
+// docker run --rm -v ${pwd}/php-cli/:/cli php:7.4-cli php /cli/homework1.php
