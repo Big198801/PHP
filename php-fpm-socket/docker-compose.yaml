@@ -14,8 +14,8 @@ services:
     ports:
       - "80:80"
     volumes:
-       - ./sample:/data/mysite.local
-       - ./phpsocket:/var/run
+      - ./sample:/data/mysite.local
+      - ./phpsocket:/var/run
     networks:
       - app-network
 
@@ -28,8 +28,8 @@ services:
     image: myapp/php # имя будущего образа
     container_name: app # имя контейнера после запуска
     volumes:
-       - ./sample:/data/mysite.local
-       - ./phpsocket:/var/run
+      - ./sample:/data/mysite.local
+      - ./phpsocket:/var/run
     # мы можем создать для контейнеров внутреннюю сеть
     networks:
       - app-network
