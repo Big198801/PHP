@@ -1,0 +1,112 @@
+$widthSite: 1140px
+
+*
+  padding: 0
+  margin: 0
+  box-sizing: border-box
+
+body
+  background-color: #FFF
+  font-family: 'Fira Code', monospace
+
+a
+  text-decoration: none
+
+details
+  user-select: none
+
+summary
+  display: block
+  position: relative
+  margin-bottom: 10px
+
+summary::-webkit-details-marker
+  display: none
+
+summary::before
+  content: '\25C4'
+  position: absolute
+  left: 100px
+  display: block
+  float: right
+  transform: rotate(0deg)
+  transition: transform 0.3s ease-in-out
+
+details[open] summary::before
+  transform: rotate(-90deg)
+
+.center
+  padding-left: calc(50% - $widthSite / 2)
+  padding-right: calc(50% - $widthSite / 2)
+
+.form
+  display: flex
+  gap: 10px
+  align-items: baseline
+
+.input
+  width: 75px
+  height: 30px
+  padding-left: 2px
+  padding-right: 2px
+  font-size: 14px
+  font-weight: 400
+  color: #796969
+  border: 1px solid #796969
+  border-radius: 5px
+
+.input_text
+  width: 262px
+
+.button
+  height: 30px
+  padding: 4px
+  font-size: 14px
+  font-weight: 400
+  color: white
+  background-color: #796969
+  border: 1px solid white
+  border-radius: 5px
+  &:hover
+    color: #796969
+    background-color: white
+    border: 1px solid #796969
+
+.result
+  font-size: 18px
+  font-weight: 400
+  color: #575454
+  padding-top: 10px
+
+.example
+  padding-top: 20px
+  padding-bottom: 20px
+  display: flex
+  flex-direction: column
+  gap: 20px
+
+  &__title
+    font-size: 26px
+    font-weight: 600
+    color: black
+
+  &__box
+    display: flex
+    flex-direction: column
+    gap: 10px
+
+  &__task_condition
+    font-size: 22px
+    font-weight: 400
+    color: #575454
+
+  &__task_solution
+    padding: 10px
+    font-size: 20px
+    font-weight: 400
+    color: #796969
+
+    &[open]
+      background-color: white
+      box-shadow: 6px 4px 35px rgba(0, 0, 0, 0.21)
+      border: 1px solid #796969
