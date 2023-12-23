@@ -1,37 +1,5 @@
 <?php
 
-$region_city = [
-    'Московская' => [
-        'Москва',
-        'Зеленоград',
-        'Клин'
-    ],
-    'Ленинградская область' => [
-        'Санкт-Петербург',
-        'Всеволожск',
-        'Павловск',
-        'Кронштадт'
-    ],
-    'Чувашская Республика' => [
-        'Чебоксары',
-        'Цивильск',
-        'Канаш',
-        'Шумерля'
-    ]
-];
-
-/* foreach ($region_city as $region => $citys) {
-    echo $region;
-    if ($citys !== null) {
-        echo ": ";
-        foreach ($citys as $city) {
-            echo $city;
-            if (next($citys) !== false) echo ", ";
-        }
-    }
-}
-*/
-
 function sum(int $arg1, int $arg2): int
 {
     return $arg1 + $arg2;
@@ -136,6 +104,98 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
     }
 }
 
+$result_region_city = "";
+$region_city = [
+    'Московская' => [
+        'Москва',
+        'Зеленоград',
+        'Клин'
+    ],
+    'Ленинградская область' => [
+        'Санкт-Петербург',
+        'Всеволожск',
+        'Павловск',
+        'Кронштадт'
+    ],
+    'Чувашская Республика' => [
+        'Чебоксары',
+        'Цивильск',
+        'Канаш',
+        'Шумерля'
+    ]
+];
+
+foreach ($region_city as $region => $citys) {
+    $result_region_city .= $region;
+    if ($citys !== null) {
+        $result_region_city .= ": ";
+        foreach ($citys as $city) {
+            $result_region_city .= $city;
+            if (next($citys) !== false) {
+                $result_region_city .= ", ";
+            } else {
+                $result_region_city .= "<br>";
+            }
+        }
+    }
+}
+
+$num1_ex01 = 0;
+$num2_ex01 = 0;
+$result_sum = 0;
+$result_diff = 0;
+$result_prod = 0;
+$result_quot = 0;
+
+if (isset($_POST['num1_ex01']) && isset($_POST['num2_ex01'])) {
+    $num1_ex01 = (int)$_POST['num1_ex01'];
+    $num2_ex01 = (int)$_POST['num2_ex01'];
+    $result_sum = sum($num1_ex01, $num2_ex01);
+    $result_diff = diff($num1_ex01, $num2_ex01);
+    $result_prod = prod($num1_ex01, $num2_ex01);
+    $result_quot = quot($num1_ex01, $num2_ex01);
+}
+
+$num1_ex02 = 0;
+$num2_ex02 = 0;
+$operator = '';
+$result_math = 0;
+
+if (isset($_POST['num1_ex02']) && isset($_POST['num2_ex02']) && isset($_POST['operate'])) {
+    $num1_ex02 = (int)$_POST['num1_ex02'];
+    $num2_ex02 = (int)$_POST['num2_ex02'];
+    $operator = $_POST['operate'];
+    $result_math = with_operation($num1_ex02, $num2_ex02, $operator);
+}
+
+$string = "";
+$result_transliteration = "";
+
+if (isset($_POST['transliteration'])) {
+    $string = $_POST['transliteration'];
+    $result_transliteration = transliteration($string);
+}
+
+$num1_ex05 = 0;
+$num2_ex05 = 0;
+$result_power = 0;
+
+if (isset($_POST['num1_ex05']) && isset($_POST['num2_ex05'])) {
+    $num1_ex05 = (int)$_POST['num1_ex05'];
+    $num2_ex05 = (int)$_POST['num2_ex05'];
+    $result_power = power($num1_ex05, $num2_ex05);
+}
+
+$num1_ex06 = 0;
+$num2_ex06 = 0;
+$result_time = "";
+
+if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
+    $num1_ex06 = (int)$_POST['num1_ex06'];
+    $num2_ex06 = (int)$_POST['num2_ex06'];
+    $result_time = validate_time($num1_ex06, $num2_ex06);
+}
+
 ?>
 
 <!doctype html>
@@ -169,15 +229,10 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
-            <?php
-            if (isset($_POST['num1_ex01']) && isset($_POST['num2_ex01'])):
-                $num1_ex01 = (int)$_POST['num1_ex01'];
-                $num2_ex01 = (int)$_POST['num2_ex01']; ?>
-                <p class="result"><?php echo "Сумма чисел: " . sum($num1_ex01, $num2_ex01); ?></p>
-                <p class="result"><?php echo "Разница чисел: " . diff($num1_ex01, $num2_ex01); ?></p>
-                <p class="result"><?php echo "Произведение чисел: " . prod($num1_ex01, $num2_ex01); ?></p>
-                <p class="result"><?php echo "Деление чисел: " . quot($num1_ex01, $num2_ex01); ?></p>
-            <?php endif; ?>
+            <p class="result"><?php echo "Сумма чисел: " . $result_sum; ?></p>
+            <p class="result"><?php echo "Разница чисел: " . $result_diff; ?></p>
+            <p class="result"><?php echo "Произведение чисел: " . $result_prod; ?></p>
+            <p class="result"><?php echo "Деление чисел: " . $result_quot; ?></p>
         </details>
     </article>
     <article class="example__box">
@@ -200,13 +255,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
-            <?php
-            if (isset($_POST['num1_ex02']) && isset($_POST['num2_ex02']) && isset($_POST['operate'])):
-                $num1_ex02 = (int)$_POST['num1_ex02'];
-                $num2_ex02 = (int)$_POST['num2_ex02'];
-                $operator = $_POST['operate']; ?>
-                <p class="result"><?php echo "Результат: " . with_operation($num1_ex02, $num2_ex02, $operator); ?></p>
-            <?php endif; ?>
+            <p class="result"><?php echo "Результат: " . $result_math; ?></p>
         </details>
     </article>
     <article class="example__box">
@@ -218,19 +267,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
             Рязанская область … (названия городов можно найти на maps.yandex.ru).</h2>
         <details open class="example__task_solution">
             <summary>Решение</summary>
-            <?php foreach ($region_city as $region => $citys): ?>
-                <p class="result">
-                    <?php echo $region;
-                    if ($citys !== null):
-                        echo ": ";
-                        foreach ($citys as $city):
-                            echo $city;
-                            if (next($citys) !== false)
-                                echo ", ";
-                        endforeach;
-                    endif; ?>
-                </p>
-            <?php endforeach; ?>
+            <p class="result"><?php echo $result_region_city ?> </p>
         </details>
     </article>
     <article class="example__box">
@@ -246,11 +283,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
                 </label>
                 <button class="button" type="submit">Перевести</button>
             </form>
-            <?php
-            if (isset($_POST['transliteration'])):
-                $string = $_POST['transliteration']; ?>
-                <p class="result"><?php echo "Результат: " . transliteration($string); ?></p>
-            <?php endif; ?>
+            <p class="result"><?php echo "Результат: " . $result_transliteration; ?></p>
         </details>
     </article>
     <article class="example__box">
@@ -267,12 +300,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
-            <?php
-            if (isset($_POST['num1_ex05']) && isset($_POST['num2_ex05'])):
-                $num1_ex05 = (int)$_POST['num1_ex05'];
-                $num2_ex05 = (int)$_POST['num2_ex05']; ?>
-                <p class="result"><?php echo "Число $num1_ex05 в степни $num2_ex05: " . power($num1_ex05, $num2_ex05); ?></p>
-            <?php endif; ?>
+            <p class="result"><?php echo "Число $num1_ex05 в степни $num2_ex05: " . $result_power; ?></p>
         </details>
     </article>
     <article class="example__box">
@@ -289,12 +317,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
-            <?php
-            if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])):
-                $num1_ex06 = (int)$_POST['num1_ex06'];
-                $num2_ex06 = (int)$_POST['num2_ex06']; ?>
-                <p class="result"><?php echo "Результат: " . validate_time($num1_ex06, $num2_ex06); ?></p>
-            <?php endif; ?>
+            <p class="result"><?php echo "Результат: " . $result_time; ?></p>
         </details>
     </article>
 </div>
