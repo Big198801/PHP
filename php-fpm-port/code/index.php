@@ -20,6 +20,18 @@ $region_city = [
     ]
 ];
 
+/* foreach ($region_city as $region => $citys) {
+    echo $region;
+    if ($citys !== null) {
+        echo ": ";
+        foreach ($citys as $city) {
+            echo $city;
+            if (next($citys) !== false) echo ", ";
+        }
+    }
+}
+*/
+
 function sum(int $arg1, int $arg2): int
 {
     return $arg1 + $arg2;
@@ -123,6 +135,7 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
         return $plural2;
     }
 }
+
 ?>
 
 <!doctype html>
