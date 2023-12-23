@@ -1,4 +1,14 @@
 <?php
+$users = [
+    [
+        'name' => 'Bob',
+        'age' => 27
+    ],
+    [
+        'name' => 'alex',
+        'age' => 30
+    ]
+]
 ?>
 
 <!doctype html>
@@ -8,10 +18,13 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>homework_2</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
 </head>
 <body>
-
+<?php foreach ($users as $user): ?>
+    <div>
+        <b><?= $user["name"] ?></b><b><?= $user["age"] ?></b>
+    </div>
+<?php endforeach; ?>
 </body>
 </html>
