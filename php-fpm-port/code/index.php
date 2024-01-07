@@ -1,26 +1,26 @@
 <?php
 
-function sum(int $arg1, int $arg2): int
+function sum(float $arg1, float $arg2): float
 {
     return $arg1 + $arg2;
 }
 
-function diff(int $arg1, int $arg2): int
+function diff(float $arg1, float $arg2): float
 {
     return $arg1 - $arg2;
 }
 
-function prod(int $arg1, int $arg2): int
+function prod(float $arg1, float $arg2): float
 {
     return $arg1 * $arg2;
 }
 
 function quot(float $arg1, float $arg2): float|string
 {
-    return ($arg2 == 0) ? "Ошибка деления на ноль" : round($arg1 / $arg2, 2);
+    return ($arg2 == 0) ? "Ошибка деления на ноль" : $arg1 / $arg2;
 }
 
-function with_operation(int $arg1, int $arg2, string $operator): int|string|float
+function with_operation(float $arg1, float $arg2, string $operator): string|float
 {
     return match ($operator) {
         "+" => sum($arg1, $arg2),
@@ -50,27 +50,23 @@ function transliteration(string $str): string
     $check_upper = false;
     $result = "";
 
-    for ($i = 0; $i < strlen($str); $i++) {
+    for ($i = 0; $i < mb_strlen($str); $i++) {
         $char = mb_substr($str, $i, 1);
         if ($char == mb_strtoupper($char, 'UTF-8')) {
             $char = mb_strtolower($char, 'UTF-8');
             $check_upper = true;
         }
-        foreach ($translate as $key_valid => $value) {
-            if ($char === $key_valid) {
-                if ($check_upper) {
-                    $result .= ucfirst($value);
-                } else {
-                    $result .= $value;
-                }
-                $check_upper = false;
-                continue(2);
+        if ($translate[$char]) {
+            if ($check_upper) {
+                $result .= ucfirst($translate[$char]);
+            } else {
+                $result .= $translate[$char];
             }
+        } else {
+            $result .= $char;
         }
         $check_upper = false;
-        $result .= $char;
     }
-
     return $result;
 }
 
@@ -79,7 +75,12 @@ function power(int $val, int $pow): int
     if ($pow === 0) {
         return 1;
     }
-    return $val * power($val, $pow - 1);
+
+    if ($pow > 0) {
+        return $val * power($val, $pow - 1);
+    } else {
+        return 1 / ($val * power($val, abs($pow) - 1));
+    }
 }
 
 function validate_time(int $hours, int $minutes): string
@@ -93,15 +94,12 @@ function get_validate_time(int $number, string $singular, string $plural1, strin
 {
     $last_digit = $number % 10;
 
-    if ($number > 10 && $number < 20) {
-        return $plural2;
-    } elseif ($last_digit === 1) {
-        return $singular;
-    } elseif ($last_digit > 1 && $last_digit < 5) {
-        return $plural1;
-    } else {
-        return $plural2;
-    }
+    return match (true) {
+        $number > 10 && $number < 20 => $plural2,
+        $last_digit === 1 => $singular,
+        $last_digit > 1 && $last_digit < 5 => $plural1,
+        default => $plural2,
+    };
 }
 
 $result_region_city = "";
@@ -218,14 +216,14 @@ if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
         <h2 class="example__task_condition"><b>1.</b>Реализовать основные 4 арифметические операции в виде функции с
             двумя параметрами – два параметра это числа. Обязательно использовать оператор return.
             Проверьте деление на ноль и верните текст, ошибка деления на ноль.</h2>
-        <details open class="example__task_solution">
+        <details open class="example__task_solution" id="ex01">
             <summary>Решение</summary>
-            <form class="form" action="index.php" method="post">
+            <form class="form" action="index.php#ex01" method="post">
                 <label for="number_1">
-                    <input class="input" name="num1_ex01" id="number_1" type="number" placeholder="Число 1" required>
+                    <input class="input" name="num1_ex01" id="number_1" placeholder="Число 1" required>
                 </label>
                 <label for="number_2">
-                    <input class="input" name="num2_ex01" id="number_2" type="number" placeholder="Число 2" required>
+                    <input class="input" name="num2_ex01" id="number_2" placeholder="Число 2" required>
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
@@ -241,17 +239,17 @@ if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
             названием операции. В зависимости от переданного значения операции выполнить одну из арифметических операций
             и вернуть полученное значение (использовать switch). Используйте функции
             из п.1</h2>
-        <details open class="example__task_solution">
+        <details open class="example__task_solution" id="ex02">
             <summary>Решение</summary>
-            <form class="form" action="index.php" method="post">
+            <form class="form" action="index.php#ex02" method="post">
                 <label for="number_1">
-                    <input class="input" name="num1_ex02" id="number_1" type="number" placeholder="Число 1" required>
+                    <input class="input" name="num1_ex02" id="number_1" placeholder="Число 1" required>
                 </label>
                 <label for="number_2">
-                    <input class="input" name="num2_ex02" id="number_2" type="number" placeholder="Число 2" required>
+                    <input class="input" name="num2_ex02" id="number_2" placeholder="Число 2" required>
                 </label>
                 <label for="operator">
-                    <input class="input" name="operate" id="operator" type="text" placeholder="+,-,*,/" required>
+                    <input class="input" name="operate" id="operator" placeholder="+,-,*,/" required>
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
@@ -274,11 +272,11 @@ if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
         <h2 class="example__task_condition"><b>4.</b>Объявить массив, индексами которого являются буквы русского языка,
             а значениями – соответствующие латинские буквосочетания (‘а’ => ’a’, ‘б’ => ‘b’, ‘в’ => ‘v’, ‘г’ => ‘g’, …,
             ‘э’ => ‘e’, ‘ю’ => ‘yu’, ‘я’ => ‘ya’). Написать функцию транслитерации строк.</h2>
-        <details open class="example__task_solution">
+        <details open class="example__task_solution" id="ex04">
             <summary>Решение</summary>
-            <form class="form" action="index.php" method="post">
+            <form class="form" action="index.php#ex04" method="post">
                 <label for="transliteration">
-                    <input class="input input_text" name="transliteration" id="transliteration" type="text"
+                    <input class="input input_text" name="transliteration" id="transliteration"
                            placeholder="Текст на русском" required>
                 </label>
                 <button class="button" type="submit">Перевести</button>
@@ -289,14 +287,14 @@ if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
     <article class="example__box">
         <h2 class="example__task_condition"><b>5.</b>*С помощью рекурсии организовать функцию возведения числа в
             степень. Формат: function power($val, $pow), где $val – заданное число, $pow – степень.</h2>
-        <details open class="example__task_solution">
+        <details open class="example__task_solution" id="ex05">
             <summary>Решение</summary>
-            <form class="form" action="index.php" method="post">
+            <form class="form" action="index.php#ex05" method="post">
                 <label for="number_1">
-                    <input class="input" name="num1_ex05" id="number_1" type="number" placeholder="Число" required>
+                    <input class="input" name="num1_ex05" id="number_1" placeholder="Число" required>
                 </label>
                 <label for="number_2">
-                    <input class="input" name="num2_ex05" id="number_2" type="number" placeholder="Степень" required>
+                    <input class="input" name="num2_ex05" id="number_2" placeholder="Степень" required>
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
@@ -306,14 +304,14 @@ if (isset($_POST['num1_ex06']) && isset($_POST['num2_ex06'])) {
     <article class="example__box">
         <h2 class="example__task_condition"><b>6.</b>*Написать функцию, которая вычисляет текущее время и возвращает его
             в формате с правильными склонениями.</h2>
-        <details open class="example__task_solution">
+        <details open class="example__task_solution" id="ex06">
             <summary>Решение</summary>
-            <form class="form" action="index.php" method="post">
+            <form class="form" action="index.php#ex06" method="post">
                 <label for="number_1">
-                    <input class="input" name="num1_ex06" id="number_1" type="number" placeholder="Часы" required>
+                    <input class="input" name="num1_ex06" id="number_1" placeholder="Часы" required>
                 </label>
                 <label for="number_2">
-                    <input class="input" name="num2_ex06" id="number_2" type="number" placeholder="Минуты" required>
+                    <input class="input" name="num2_ex06" id="number_2" placeholder="Минуты" required>
                 </label>
                 <button class="button" type="submit">Посчитать</button>
             </form>
