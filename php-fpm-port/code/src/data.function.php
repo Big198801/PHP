@@ -12,7 +12,13 @@ function validateDate(string $date): bool
     $month = $dateBlocks[1];
     $year = $dateBlocks[2];
 
-    if (!is_numeric($day) || $day < 1 || $day > 31) {
+    $leap = $year % 4 == 0 && $year % 100 != 0 || $year % 400 == 0;
+
+    if (is_numeric($day) && $day > 0 || $day < 32) {
+        if (in_array($month, [4, 6, 9, 11]) && $day > 30) return false;
+        elseif ($leap && $month == 2 && $day > 29) return false;
+        elseif (!$leap && $month == 2 && $day > 28) return false;
+    } else {
         return false;
     }
 
