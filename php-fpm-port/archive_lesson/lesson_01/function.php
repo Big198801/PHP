@@ -20,5 +20,5 @@ $add = fn($x, $y) => $x + $y;
 
 $result = add(2,2);
 
-echo $add(2,3) . PHP_EOL;
+echo $add(2, 3) . PHP_EOL;
 echo $result . PHP_EOL;
