@@ -141,6 +141,9 @@ function searchTodayBirthday(array $config): string
 
         while (!feof($file)) {
             $string = fgets($file);
+
+            if($string == '') break;
+
             $date = date('d-m', strtotime(explode(", ", $string)[1]));
 
             if ($date === $today) {
