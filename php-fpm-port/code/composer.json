@@ -1,17 +1,9 @@
 {
-  "name": "example/project",
-  "description": "Приложение работы с файлоым хранилищем",
-  "type": "project",
-  "require": {
-    "php": "^8.2",
-    "ext-readline": "*"
-  },
-  "autoload": {
-    "files": [
-      "src/main.function.php",
-      "src/template.function.php",
-      "src/file.function.php",
-      "src/data.function.php"
-    ]
-  }
+    "name": "app/oop",
+    "autoload": {
+        "psr-4": {
+            "App\\Oop\\": "src/"
+        }
+    },
+    "require": {}
 }
