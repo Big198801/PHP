@@ -13,7 +13,7 @@ class Config
             $address = Config::DEFAULT_ADDRESS;
         }
         $this->configuration = parse_ini_file(
-            __DIR__ . '/../' . $address,
+            __DIR__ . '/code/' . $address,
             true
         );
     }

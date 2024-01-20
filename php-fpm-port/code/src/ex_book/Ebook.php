@@ -1,8 +1,8 @@
 <?php
 
-namespace book;
+namespace App\Oop\Book;
 
-use book\Book;
+use App\Oop\Book\Book;
 
 class Ebook extends Book
 {
@@ -46,7 +46,7 @@ class Ebook extends Book
 
     public function getHand(): string
     {
-        static::$countRead++;
+        $this->counterReadings();
         return $this->download;
     }
 }

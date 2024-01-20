@@ -1,6 +1,6 @@
 <?php
 
-namespace book;
+namespace App\Oop\Book;
 
 abstract class Book
 {
@@ -9,7 +9,7 @@ abstract class Book
     protected int $yearPublication;
     protected string $genre;
     protected int $numberPages;
-    protected static int $countRead;
+    protected int $countRead = 0;
 
     /**
      * @param string $title
@@ -29,12 +29,12 @@ abstract class Book
 
     public function getInfo(): string
     {
-        $info = 'Книга:';
-        $info .= "Название - {$this->title}" . PHP_EOL;
-        $info .= "Автор - {$this->author}" . PHP_EOL;
-        $info .= "Год публикации - {$this->yearPublication}" . PHP_EOL;
-        $info .= "Жанр - {$this->genre}" . PHP_EOL;
-        $info .= "Колличество страниц - {$this->numberPages}" . PHP_EOL;
+        $info = 'КНИГА: ';
+        $info .= "Название - {$this->title}," . PHP_EOL;
+        $info .= "Автор - {$this->author}," . PHP_EOL;
+        $info .= "Год публикации - {$this->yearPublication}," . PHP_EOL;
+        $info .= "Жанр - {$this->genre}," . PHP_EOL;
+        $info .= "Колличество страниц - {$this->numberPages}," . PHP_EOL;
         return $info;
     }
 
@@ -63,9 +63,10 @@ abstract class Book
         $this->numberPages = $numberPages;
     }
 
-    public static function getCountRead(): int
+    // 
+    public function counterReadings(): void
     {
-        return static::$countRead;
+        $this->countRead++;
     }
 
     public abstract function getHand();

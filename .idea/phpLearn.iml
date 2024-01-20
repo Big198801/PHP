@@ -5,6 +5,9 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/code/src" isTestSource="false" packagePrefix="App\Oop\" />
+      <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/lesson_03/src" isTestSource="false" packagePrefix="App\Oop\" />
+      <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/code/src/ex_book" isTestSource="false" packagePrefix="App\Oop\Book\" />
+      <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/code/src/heroes" isTestSource="false" packagePrefix="App\Oop\Hero\" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor/composer" />
     </content>

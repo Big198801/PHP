@@ -23,7 +23,7 @@ class Student
     }
 }
 
-echo Student::getDiscount(50) . PHP_EOL;
+echo phpStudent::getDiscount(50) . PHP_EOL;
 
 $students = [
     new Student("Олга", 20),
