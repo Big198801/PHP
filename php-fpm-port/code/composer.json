@@ -1,0 +1,12 @@
+{
+    "name": "app/oop",
+    "description": "n",
+    "autoload": {
+        "psr-4": {
+            "App\\Oop\\": "src/",
+            "App\\Oop\\Book\\": "src/ex_book/",
+            "App\\Oop\\Hero\\": "src/heroes/"
+        }
+    },
+    "require": {}
+}
