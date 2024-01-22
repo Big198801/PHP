@@ -22,6 +22,6 @@ class Magic extends Hero
 
     public function getInfo(): string
     {
-        return printf("%s Mana %d", parent::getInfo(), $this->mana) . PHP_EOL;
+        return Magic . phpprintf("%s Mana %d", parent::getInfo(), $this->mana) . PHP_EOL;
     }
 }

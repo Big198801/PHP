@@ -22,6 +22,6 @@ abstract class Warrior extends Hero
 
     public function getInfo(): string
     {
-        return printf("%s Stamina %d", parent::getInfo(), $this->stamina) . PHP_EOL;
+        return Warrior . phpprintf("%s Stamina %d", parent::getInfo(), $this->stamina) . PHP_EOL;
     }
 }
