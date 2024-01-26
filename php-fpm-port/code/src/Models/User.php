@@ -51,7 +51,7 @@ class User
             while (!feof($file)) {
                 $userString = fgets($file);
 
-                if($userString == '') break;
+                if ($userString == '') break;
 
                 $userArray = explode(",", $userString);
 
@@ -83,10 +83,95 @@ class User
             if (fwrite($fileHandler, $data)) {
                 return "Запись добавлена в хранилище";
             } else {
-                return handleError("Произошла ошибка записи. Данные не сохранены");
+                return "Произошла ошибка записи. Данные не сохранены";
             }
         } else {
-            return handleError("В файл невозможно записать или он не существует");
+            return "В файл невозможно записать или он не существует";
+        }
+    }
+
+    public function deleteUserFromStorage(): string
+    {
+        $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
+
+        $search = $this->userName;
+
+        if (file_exists($address) && is_readable($address) && is_writable($address)) {
+            $file = fopen($address, "rb");
+
+            $content = '';
+
+            while (!feof($file)) {
+                $string = fgets($file);
+                if (explode(', ', $string)[0] === $search) continue;
+                $content .= $string;
+            }
+            fclose($file);
+
+            if ($content !== '') {
+                $file = fopen($address, 'w');
+                fwrite($file, $content);
+                fclose($file);
+            } else {
+                return "Указанная строка не найдена";
+            }
+            return "Удаление произошло успешно";
+        } else {
+            return "Список не найден";
+        }
+
+    }
+
+    public static function clearUsersFromStorage(): string|false
+    {
+        $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
+
+        if (file_exists($address) && is_writable($address)) {
+            $file = fopen($address, 'w');
+
+            fwrite($file, '');
+
+            fclose($file);
+
+            return "Список очищен";
+        } else {
+            return false;
+        }
+    }
+
+    public static function searchTodayBirthday(): array|false
+    {
+        $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
+
+        if (file_exists($address) && is_readable($address)) {
+            $file = fopen($address, "r");
+
+            $users = [];
+            $today = date('Y-m-d');
+            $tenDaysLater = date('Y-m-d', strtotime('+10 days'));
+
+            $currentYear = date('Y');
+
+            while (!feof($file)) {
+                $userString = fgets($file);
+
+                if ($userString == '') break;
+
+                $userArray = explode(",", $userString);
+                $user = new User($userArray[0]);
+                $user->setUserBirthday($userArray[1]);
+                $date = $currentYear . '-' . date('m-d', strtotime($userArray[1]));
+
+                if ($date === $today || ($date > $today && $date <= $tenDaysLater)) {
+                    $users[] = $user;
+                }
+            }
+
+            fclose($file);
+
+            return $users;
+        } else {
+            return false;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Myproject\Application;
 
-use Myproject\Application\Controllers\ErrorController;
+use Myproject\Application\Controllers\PageController;
 
 class Application
 {
@@ -48,10 +48,10 @@ class Application
                     );
                 }
             } else {
-                return call_user_func_array([new ErrorController(), "error404"], []);
+                return call_user_func_array([new PageController(), "actionError"], []);
             }
         } else {
-            return call_user_func_array([new ErrorController(), "error404"], []);
+            return call_user_func_array([new PageController(), "actionError"], []);
         }
     }
 }

@@ -33,6 +33,8 @@ class Render
 
         $templateVariables['content_template_name'] = $contentTemplateName;
 
+        $templateVariables['time'] = date('d-m-Y H:i');
+
         return $template->render($templateVariables);
     }
 }
