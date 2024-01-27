@@ -4,15 +4,23 @@ namespace Myproject\Application;
 
 use Myproject\Application\Controllers\PageController;
 
-class Application
+final class Application
 {
     private const APP_NAMESPACE = 'Myproject\Application\Controllers\\';
+
+    private static array $config;
 
     private string $controllerName;
     private string $methodName;
 
-    public function run(): string
+    public static function getConfig(): array
     {
+        return Application::$config;
+    }
+
+    public function run(): ?string
+    {
+        Application::$config = parse_ini_file('config.ini', true);
         $routeArray = explode('/', $_SERVER['REQUEST_URI']);
 
         if (isset($routeArray[1]) && $routeArray[1] != '') {
@@ -35,23 +43,17 @@ class Application
             if (method_exists($this->controllerName, $this->methodName)) {
                 $controllerInstance = new $this->controllerName();
 
-                if (!empty($_SERVER['QUERY_STRING'])) {
-                    parse_str($_SERVER['QUERY_STRING'], $getParam);
-                    return call_user_func_array(
-                        [$controllerInstance, $this->methodName],
-                        [$getParam]
-                    );
-                } else {
-                    return call_user_func_array(
+                return call_user_func_array(
                         [$controllerInstance, $this->methodName],
                         []
                     );
-                }
             } else {
-                return call_user_func_array([new PageController(), "actionError"], []);
+                header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+                return header("Location: /404.html");
             }
         } else {
-            return call_user_func_array([new PageController(), "actionError"], []);
+            header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+            return header("Location: /404.html");
         }
     }
 }

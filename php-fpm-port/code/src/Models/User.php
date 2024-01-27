@@ -108,13 +108,10 @@ class User
             }
             fclose($file);
 
-            if ($content !== '') {
-                $file = fopen($address, 'w');
-                fwrite($file, $content);
-                fclose($file);
-            } else {
-                return "Указанная строка не найдена";
-            }
+            $file = fopen($address, 'w');
+            fwrite($file, $content);
+            fclose($file);
+
             return "Удаление произошло успешно";
         } else {
             return "Список не найден";

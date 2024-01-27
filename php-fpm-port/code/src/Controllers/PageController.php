@@ -6,7 +6,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class PageController
+class PageController extends Controller
 {
     /**
      * @throws RuntimeError
@@ -15,8 +15,7 @@ class PageController
      */
     public function actionIndex(): string
     {
-        $render = new Render();
-        return $render->renderPage('page-index.tpl', ['title' => 'Главная страница']);
+        return $this->render->renderPage('page-index.twig', ['title' => 'Главная страница']);
     }
 
     /**
@@ -26,7 +25,6 @@ class PageController
      */
     public function actionError(): string
     {
-        $render = new Render();
-        return $render->renderPage('page-error.tpl', ['title' => '404']);
+        return $this->render->renderPage('page-error.twig', ['title' => '404']);
     }
 }

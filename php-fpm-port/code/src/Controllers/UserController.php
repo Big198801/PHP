@@ -9,7 +9,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class UserController
+class UserController extends Controller
 {
     /**
      * @throws SyntaxError
@@ -19,21 +19,19 @@ class UserController
     public function actionIndex(): string
     {
         $users = User::getAllUsersFromStorage();
-        $render = new Render();
 
         if (!$users) {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Список пользователей в хранилище',
                     'message' => "Список не найден"
                 ]);
         } else {
-            return $render->renderPage(
-                'user-index.tpl',
+            return $this->render->renderPage(
+                'user-index.twig',
                 [
                     'title' => 'Список пользователей в хранилище',
-                    'text' => 'Список пользователей',
                     'users' => $users
                 ]);
         }
@@ -44,28 +42,28 @@ class UserController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function actionSave(array $getParams): string
+    public function actionSave(): string
     {
-        $render = new Render();
+        $name = $_GET['name'];
+        $birthday = $_GET['birthday'];
 
-        if (array_key_exists('name', $getParams) &&
-            array_key_exists('birthday', $getParams) &&
-            Validate::validateDate($getParams['birthday'])) {
+        if (isset($name) && isset($birthday) &&
+            Validate::validateDate($birthday)) {
 
-            $user = new User($getParams['name']);
-            $user->setUserBirthday($getParams['birthday']);
+            $user = new User($name);
+            $user->setUserBirthday($birthday);
 
             $result = $user->saveUserFromStorage();
 
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Статус записи в хранилище',
                     'message' => $result
                 ]);
         } else {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Статус записи в хранилище',
                     'message' => 'Ошибка в запросе'
@@ -78,24 +76,24 @@ class UserController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function actionDelete(array $getParams): string
+    public function actionDelete(): string
     {
-        $render = new Render();
+        $name = $_GET['name'];
 
-        if (array_key_exists('name', $getParams)) {
-            $user = new User($getParams['name']);
+        if (isset($name)) {
+            $user = new User($name);
 
             $result = $user->deleteUserFromStorage();
 
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Статус записи в хранилище',
                     'message' => $result
                 ]);
         } else {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Статус записи в хранилище',
                     'message' => 'Ошибка в запросе'
@@ -111,18 +109,17 @@ class UserController
     public function actionClear(): string
     {
         $result = User::clearUsersFromStorage();
-        $render = new Render();
 
         if (!$result) {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Список пользователей в хранилище',
                     'message' => "Список не найден"
                 ]);
         } else {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Список пользователей в хранилище',
                     'message' => $result
@@ -137,19 +134,18 @@ class UserController
      */
     public function actionSearch(): string
     {
-        $render = new Render();
         $users = User::searchTodayBirthday();
 
         if (!$users) {
-            return $render->renderPage(
-                'user-empty.tpl',
+            return $this->render->renderPage(
+                'user-empty.twig',
                 [
                     'title' => 'Сегодня день рождения',
                     'message' => "Список не найден"
                 ]);
         } else {
-            return $render->renderPage(
-                'user-index.tpl',
+            return $this->render->renderPage(
+                'user-index.twig',
                 [
                     'title' => 'Сегодня день рождения',
                     'text' => 'Список пользователей',

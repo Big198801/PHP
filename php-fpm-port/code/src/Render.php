@@ -18,7 +18,7 @@ class Render
     {
         $this->loader = new FilesystemLoader($_SERVER['DOCUMENT_ROOT'] . $this->viewFolder);
         $this->environment = new Environment($this->loader, [
-            'cache' => $_SERVER['DOCUMENT_ROOT'] . '/cache/',
+            // 'cache' => $_SERVER['DOCUMENT_ROOT'] . '/cache/',
         ]);
     }
 
@@ -27,9 +27,9 @@ class Render
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function renderPage(string $contentTemplateName = 'page-index.tpl', array $templateVariables = []): string
+    public function renderPage(string $contentTemplateName = 'page-index.twig', array $templateVariables = []): string
     {
-        $template = $this->environment->load('main.tpl');
+        $template = $this->environment->load('main.twig');
 
         $templateVariables['content_template_name'] = $contentTemplateName;
 
