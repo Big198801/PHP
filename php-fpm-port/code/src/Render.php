@@ -29,9 +29,7 @@ class Render
      */
     public function renderPage(string $contentTemplateName = 'page-index.twig', array $templateVariables = []): string
     {
-        $template = $this->environment->load('main.twig');
-
-        $templateVariables['content_template_name'] = $contentTemplateName;
+        $template = $this->environment->load($contentTemplateName);
 
         $templateVariables['time'] = date('d-m-Y H:i');
 

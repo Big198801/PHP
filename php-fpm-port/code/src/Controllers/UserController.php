@@ -20,21 +20,13 @@ class UserController extends Controller
     {
         $users = User::getAllUsersFromStorage();
 
-        if (!$users) {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Список пользователей в хранилище',
-                    'message' => "Список не найден"
-                ]);
-        } else {
-            return $this->render->renderPage(
-                'user-index.twig',
-                [
-                    'title' => 'Список пользователей в хранилище',
-                    'users' => $users
-                ]);
-        }
+        return $this->render->renderPage(
+            'user-index.twig',
+            [
+                'title' => 'Список пользователей в хранилище',
+                'message' => "Список не найден",
+                'users' => $users
+            ]);
     }
 
     /**
@@ -47,28 +39,17 @@ class UserController extends Controller
         $name = $_GET['name'] ?? '';
         $birthday = $_GET['birthday'] ?? '';
 
-        if (isset($name) && isset($birthday) &&
-            Validate::validateDate($birthday)) {
+        $user = new User($name);
+        $user->setUserBirthday($birthday);
 
-            $user = new User($name);
-            $user->setUserBirthday($birthday);
+        $result = $user->saveUserFromStorage();
 
-            $result = $user->saveUserFromStorage();
-
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Статус записи в хранилище',
-                    'message' => $result
-                ]);
-        } else {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Статус записи в хранилище',
-                    'message' => 'Ошибка в запросе'
-                ]);
-        }
+        return $this->render->renderPage(
+            'user-index.twig',
+            [
+                'title' => 'Статус записи в хранилище',
+                'message' => $result
+            ]);
     }
 
     /**
@@ -80,25 +61,16 @@ class UserController extends Controller
     {
         $name = $_GET['name'] ?? '';
 
-        if (isset($name)) {
-            $user = new User($name);
+        $user = new User($name);
 
-            $result = $user->deleteUserFromStorage();
+        $result = $user->deleteUserFromStorage();
 
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Статус записи в хранилище',
-                    'message' => $result
-                ]);
-        } else {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Статус записи в хранилище',
-                    'message' => 'Ошибка в запросе'
-                ]);
-        }
+        return $this->render->renderPage(
+            'user-index.twig',
+            [
+                'title' => 'Статус записи в хранилище',
+                'message' => $result
+            ]);
     }
 
     /**
@@ -110,21 +82,12 @@ class UserController extends Controller
     {
         $result = User::clearUsersFromStorage();
 
-        if (!$result) {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Список пользователей в хранилище',
-                    'message' => "Список не найден"
-                ]);
-        } else {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Список пользователей в хранилище',
-                    'message' => $result
-                ]);
-        }
+        return $this->render->renderPage(
+            'user-index.twig',
+            [
+                'title' => 'Список пользователей в хранилище',
+                'message' => $result
+            ]);
     }
 
     /**
@@ -136,21 +99,13 @@ class UserController extends Controller
     {
         $users = User::searchTodayBirthday();
 
-        if (!$users) {
-            return $this->render->renderPage(
-                'user-empty.twig',
-                [
-                    'title' => 'Сегодня день рождения',
-                    'message' => "Список не найден"
-                ]);
-        } else {
-            return $this->render->renderPage(
-                'user-index.twig',
-                [
-                    'title' => 'Сегодня день рождения',
-                    'text' => 'Список пользователей',
-                    'users' => $users
-                ]);
-        }
+        return $this->render->renderPage(
+            'user-index.twig',
+            [
+                'title' => 'Сегодня день рождения',
+                'message' => "некого поздравлять",
+                'users' => $users
+            ]);
+
     }
 }

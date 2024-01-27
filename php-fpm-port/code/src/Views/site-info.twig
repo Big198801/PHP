@@ -1,3 +1,9 @@
-<p>Весрия сервера: {{ server }}</p>
-<p>Версия php: {{ phpVersion }}</p>
-<p>Весрия браузера: {{ userAgent }}</p>
+{% extends "main.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <p>Весрия сервера: {{ server }}</p>
+    <p>Версия php: {{ phpVersion }}</p>
+    <p>Весрия браузера: {{ userAgent }}</p>
+{% endblock %}

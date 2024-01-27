@@ -39,7 +39,7 @@ class User
         $this->userBirthday = strtotime($userBirthday);
     }
 
-    public static function getAllUsersFromStorage(): array|false
+    public static function getAllUsersFromStorage(): ?array
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
 
@@ -67,7 +67,7 @@ class User
             return $users;
 
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -78,6 +78,12 @@ class User
         $data = $this->userName . ', ' . date('d-m-Y', $this->userBirthday) . PHP_EOL;
 
         $fileHandler = fopen($address, 'a');
+
+        if (!isset($this->userName) &&
+            !isset($this->userBirthday) &&
+            !Validate::validateDate($this->userBirthday)) {
+            return 'Ошибка в запросе';
+        }
 
         if (file_exists($address) && is_writable($address)) {
             if (fwrite($fileHandler, $data)) {
@@ -93,6 +99,10 @@ class User
     public function deleteUserFromStorage(): string
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
+
+        if (!isset($this->userName)) {
+            return 'Ошибка в запросе';
+        }
 
         $search = $this->userName;
 
@@ -132,11 +142,11 @@ class User
 
             return "Список очищен";
         } else {
-            return false;
+            return "Список не найден";
         }
     }
 
-    public static function searchTodayBirthday(): array|false
+    public static function searchTodayBirthday(): ?array
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
 
@@ -168,7 +178,7 @@ class User
 
             return $users;
         } else {
-            return false;
+            return null;
         }
     }
 }
