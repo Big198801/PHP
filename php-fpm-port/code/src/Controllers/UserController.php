@@ -44,8 +44,8 @@ class UserController extends Controller
      */
     public function actionSave(): string
     {
-        $name = $_GET['name'];
-        $birthday = $_GET['birthday'];
+        $name = $_GET['name'] ?? '';
+        $birthday = $_GET['birthday'] ?? '';
 
         if (isset($name) && isset($birthday) &&
             Validate::validateDate($birthday)) {
@@ -78,7 +78,7 @@ class UserController extends Controller
      */
     public function actionDelete(): string
     {
-        $name = $_GET['name'];
+        $name = $_GET['name'] ?? '';
 
         if (isset($name)) {
             $user = new User($name);
