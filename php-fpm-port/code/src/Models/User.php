@@ -4,16 +4,18 @@ namespace Myproject\Application\Models;
 
 class User
 {
-    private string $userName;
+    private ?string $userName;
     private ?int $userBirthday; // ? - также может быть null
 
+    private static int $lastPage = 1;
+    private static int $userCount = 0;
     private static string $storageAddress = '/storage/birthdays.txt';
 
     /**
-     * @param string $userName
+     * @param string|null $userName
      * @param int|null $userBirthday
      */
-    public function __construct(string $userName, ?int $userBirthday = null)
+    public function __construct(?string $userName = null, ?int $userBirthday = null)
     {
         $this->userName = $userName;
         $this->userBirthday = $userBirthday;
@@ -39,19 +41,57 @@ class User
         $this->userBirthday = strtotime($userBirthday);
     }
 
-    public static function getAllUsersFromStorage(): ?array
+    public function generatePageNumbers(int $currentPage) : array
+    {
+        $pageNumbers = array();
+
+        $middleNumberIndex = 2;
+        $startNumber = $currentPage - $middleNumberIndex;
+        $endNumber = $currentPage + $middleNumberIndex;
+
+        if ($startNumber < 1) {
+            $endNumber += abs($startNumber) + 1;
+            $startNumber = 1;
+        }
+        if ($endNumber > static::$lastPage) {
+            $startNumber -= $endNumber - static::$lastPage;
+            $endNumber = static::$lastPage;
+            if ($startNumber < 1) {
+                $startNumber = 1;
+            }
+        }
+
+        for ($i = $startNumber; $i <= $endNumber; $i++) {
+            $pageNumbers[] = $i;
+        }
+
+        return $pageNumbers;
+    }
+
+    public function getAllUsersFromStorage(int $currentPage): ?array
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
 
         if (file_exists($address) && is_readable($address)) {
             $file = fopen($address, "r");
 
+            User::$userCount = count(file($address));
+            User::$lastPage = ceil(User::$userCount / 10);
+
             $users = [];
+
+            $maxLineCount = $currentPage * 10;
+            $lineCount = $maxLineCount - 10;
+            $currentLine = 0;
 
             while (!feof($file)) {
                 $userString = fgets($file);
 
                 if ($userString == '') break;
+
+                $currentLine++;
+                if ($currentLine <= $lineCount) continue;
+                if ($currentLine > $maxLineCount) break;
 
                 $userArray = explode(",", $userString);
 
@@ -61,6 +101,8 @@ class User
                 $user->setUserBirthday($userArray[1]);
 
                 $users[] = $user;
+
+                $lineCount++;
             }
             fclose($file);
 
@@ -129,7 +171,7 @@ class User
 
     }
 
-    public static function clearUsersFromStorage(): string|false
+    public function clearUsersFromStorage(): string|false
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
 
@@ -146,7 +188,7 @@ class User
         }
     }
 
-    public static function searchTodayBirthday(): ?array
+    public function searchTodayBirthday(): ?array
     {
         $address = $_SERVER['DOCUMENT_ROOT'] . User::$storageAddress;
 

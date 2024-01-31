@@ -18,14 +18,17 @@ class UserController extends Controller
      */
     public function actionIndex(): string
     {
-        $users = User::getAllUsersFromStorage();
+        $user = new User();
+        $currentPage = $_GET['page'] ?? 1;
 
         return $this->render->renderPage(
             'user-index.twig',
             [
                 'title' => 'Список пользователей в хранилище',
                 'message' => "Список не найден",
-                'users' => $users
+                'users' => $user->getAllUsersFromStorage($currentPage),
+                'pages' => $user->generatePageNumbers($currentPage),
+                'current_page' => $currentPage
             ]);
     }
 
@@ -80,7 +83,7 @@ class UserController extends Controller
      */
     public function actionClear(): string
     {
-        $result = User::clearUsersFromStorage();
+        $result = (new User())->clearUsersFromStorage();
 
         return $this->render->renderPage(
             'user-index.twig',
@@ -97,7 +100,7 @@ class UserController extends Controller
      */
     public function actionSearch(): string
     {
-        $users = User::searchTodayBirthday();
+        $users = (new User())->searchTodayBirthday();
 
         return $this->render->renderPage(
             'user-index.twig',

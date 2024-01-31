@@ -20,12 +20,24 @@
                     </form>
                 </li>
             {% endfor %}
-            <form class="list__button" action="/user/clear/" method="get">
+        </ul>
+        <div class="list__footer">
+            <ul class="list__switch-pages">
+                {% for page in pages %}
+                    {% if page == current_page %}
+                        <li><a class="list__page list__page_active" href="/user/index/?page={{ page }}">{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li><a class="list__page" href="/user/index/?page={{ page }}">{{ page }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <form action="/user/clear/" method="get">
                 <button type="submit">Удалить все</button>
             </form>
-        </ul>
+        </div>
     {% else %}
-        <p>{{message}}</p>
+        <p>{{ message }}</p>
     {% endif %}
 {% endblock %}
 
