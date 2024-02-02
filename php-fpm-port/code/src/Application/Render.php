@@ -1,6 +1,6 @@
 <?php
 
-namespace Myproject\Application;
+namespace Myproject\Application\Application;
 
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -10,7 +10,7 @@ use Twig\Loader\FilesystemLoader;
 
 class Render
 {
-    private string $viewFolder = '/src/Views';
+    private string $viewFolder = '/src/Domain/Views';
     private FilesystemLoader $loader;
     private Environment $environment;
 
@@ -32,6 +32,23 @@ class Render
         $template = $this->environment->load($contentTemplateName);
 
         $templateVariables['time'] = date('d-m-Y H:i');
+
+        return $template->render($templateVariables);
+    }
+
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
+    public function renderExceptionPage(string $error) : string
+    {
+        $template = $this->environment->load('page-index.twig');
+
+        $templateVariables['time'] = date('d-m-Y H:i');
+        $templateVariables['alert_message'] = $error;
+        $templateVariables['alert_head'] = 'Ошибка';
+        $templateVariables['alert'] = true;
 
         return $template->render($templateVariables);
     }

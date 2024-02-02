@@ -1,8 +1,8 @@
 <?php
 
-namespace Myproject\Application\Controllers;
+namespace Myproject\Application\Domain\Controllers;
 
-use Myproject\Application\Render;
+use Myproject\Application\Application\Render;
 
 class Controller
 {

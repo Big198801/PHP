@@ -2,9 +2,9 @@ FROM php:8.2-fpm
 
 COPY ./php.ini /usr/local/etc/php/conf.d/php-custom.ini
 
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN apt-get update && apt-get install zip unzip
 
-RUN pecl install -o -f xdebug && docker-php-ext-enable xdebug
+RUN docker-php-ext-install pdo_mysql
 
 WORKDIR /data
 

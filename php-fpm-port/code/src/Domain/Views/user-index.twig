@@ -1,0 +1,61 @@
+{% extends "main.twig" %}
+
+{% block title %}Список пользователей в хранилище{% endblock %}
+
+{% block content %}
+    {% include 'user-function.twig' %}
+    <ul class="list" id="navigation">
+        <li class="list__left">Имя</li>
+        <li class="list__left">Фамилия</li>
+        <li>День рождения</li>
+        <li>Редактировать</li>
+        <li>Удалить</li>
+        <li class="list__separator"></li>
+        {% if users|length > 0 %}
+            {% for user in users %}
+            <li class="list__left list__flex">
+                <p>{{ user.getUserName() }}</p>
+            </li>
+            <li class="list__left list__flex">
+                <p>{{ user.getUserLastname() }}</p>
+            </li>
+            <li class="list__flex">
+                <p>{{ user.getUserBirthday() | date('d.m.Y') }}</p>
+            </li>
+            <li>
+                <button onclick="showEdit({{ user.getUserId }})" class="list__btn" type="submit">&#9998;</button>
+                {% include 'site-edituser.twig' %}
+            </li>
+            <li>
+                <form action="/user/delete/" method="get">
+                    <input type="hidden" name="id" value="{{ user.getUserId }}">
+                    <button class="list__btn" type="submit">х</button>
+                </form>
+            </li>
+            {% endfor %}
+        {% else %}
+            <script type="text/javascript">
+                window.onload = function () {
+                    showAlert();
+                };
+            </script>
+        {% endif %}
+    </ul>
+    <div class="list__footer">
+        <ul class="list__switch-pages">
+            {% for page in pages %}
+                {% if page == current_page %}
+                    <li><a class="list__page list__page_active" href="/user/index/?page={{ page }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li><a class="list__page" href="/user/index/?page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <form action="/user/clear/" method="get">
+            <button type="submit">Очистить базу</button>
+        </form>
+    </div>
+{% endblock %}
+
+

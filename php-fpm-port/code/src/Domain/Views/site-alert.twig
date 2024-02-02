@@ -1,0 +1,20 @@
+<div id="customAlert" class="alert">
+    <div class="alert__box" id="box">
+        {% if alert_head == 'Ошибка' %}
+            <div class="alert__heading alert__heading_error">{{ alert_head }}</div>
+        {% else %}
+            <div class="alert__heading">{{ alert_head }}</div>
+        {% endif %}
+        <div class="alert__content">
+            <p>{{ alert_message }}</p>
+            <button type="button" id="confirmbtn" onclick="hideAlert()">OK</button>
+        </div>
+    </div>
+    {% if alert == true %}
+        <script type="text/javascript">
+            window.onload = function () {
+                showAlert();
+            };
+        </script>
+    {% endif %}
+</div>

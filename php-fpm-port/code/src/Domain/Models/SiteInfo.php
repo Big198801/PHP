@@ -1,6 +1,6 @@
 <?php
 
-namespace Myproject\Application\Models;
+namespace Myproject\Application\Domain\Models;
 
 class SiteInfo
 {

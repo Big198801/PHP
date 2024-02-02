@@ -1,9 +1,8 @@
 <?php
 
-namespace Myproject\Application\Controllers;
+namespace Myproject\Application\Domain\Controllers;
 
-use Myproject\Application\Models\SiteInfo;
-use Myproject\Application\Render;
+use Myproject\Application\Domain\Models\SiteInfo;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;

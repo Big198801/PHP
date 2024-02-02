@@ -1,26 +1,28 @@
 <?php
 
-namespace Myproject\Application;
+namespace Myproject\Application\Application;
 
-use Myproject\Application\Controllers\PageController;
+use Myproject\Application\Infrastructure\Config;
+use Myproject\Application\Infrastructure\Storage;
 
 final class Application
 {
-    private const APP_NAMESPACE = 'Myproject\Application\Controllers\\';
-
-    private static array $config;
+    private const APP_NAMESPACE = 'Myproject\Application\Domain\Controllers\\';
 
     private string $controllerName;
     private string $methodName;
 
-    public static function getConfig(): array
+    public static Config $config;
+    public static Storage $storage;
+
+    public function __construct()
     {
-        return Application::$config;
+        Application::$config = new Config();
+        Application::$storage = new Storage();
     }
 
     public function run(): ?string
     {
-        Application::$config = parse_ini_file('config.ini', true);
         $routeArray = explode('/', $_SERVER['REQUEST_URI']);
 
         if (isset($routeArray[1]) && $routeArray[1] != '') {

@@ -23,13 +23,16 @@ li
   position: fixed
   text-shadow: 1px 1px 1px black
   background-color: darkslategray
+
   & ul
     display: flex
     flex-direction: column
+
   & a
     color: white
     padding: 1rem 2rem
     display: block
+
     &:hover
       color: #F1E4E6
       background-color: $colorBasic
@@ -42,11 +45,14 @@ li
   padding: 10vh 20vw 0
   height: 100vh
   gap: 1rem
+
   & h1
     font-size: 90px
+
   & h3
     font-size: 30px
     text-align: center
+
   & p
     text-align: center
     font-size: 18px
@@ -78,9 +84,11 @@ li
   min-height: 80vh
   flex-direction: column
   gap: 1rem
+
   & h3
     font-weight: 600
     font-size: 26px
+
   & a
     color: $colorBasic
 
@@ -132,29 +140,29 @@ form
     align-items: center
     justify-content: flex-end
 
-    & input
-      font-size: 16px
-      padding: 0.5rem 0.5rem
-      border: 1px solid $colorBasic
-      height: 2rem
-
-  & button
-    border: 1px solid white
-    padding: 0.4rem 0.75rem
+  & input
+    font-size: 16px
+    padding: 0.5rem 0.5rem
+    border: 1px solid $colorBasic
     height: 2rem
-    width: 150px
-    color: white
-    background-color: $colorBasic
-    transition: color 0.4s, background-color 0.4s, border-color 0.4s
 
-    &:hover
-      border-color: $colorBasic
-      color: $colorBasic
-      background-color: white
+button
+  border: 1px solid white
+  padding: 0.4rem
+  height: 2rem
+  width: 150px
+  color: white
+  background-color: $colorBasic
+  transition: color 0.4s, background-color 0.4s, border-color 0.4s
+
+  &:hover
+    border-color: $colorBasic
+    color: $colorBasic
+    background-color: white
 
 .list
   display: grid
-  grid-template-columns: 1fr 1fr 200px
+  grid-template-columns: 1fr 1fr 1fr 200px 200px
   grid-row-gap: 0.75rem
   justify-items: center
   align-items: center
@@ -181,12 +189,12 @@ form
       background-color: lightgrey
 
   &__separator
-    grid-column: span 3
+    grid-column: span 5
     background-color: lightgrey
     height: 2px
     width: 100%
 
-  &__delete
+  &__btn
     width: 2rem
 
   &__footer
@@ -196,3 +204,47 @@ form
     justify-items: center
     align-items: center
     margin-top: auto
+
+.alert
+  display: none
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  z-index: 999
+  background-color: rgba(255, 255, 255, 0.75)
+
+  &__box
+    position: absolute
+    padding: 1rem
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    border-radius: 5px
+    min-width: 260px
+    min-height: 150px
+    text-align: center
+    box-shadow: 2px 2px 8px black
+    background-color: white
+
+  &__heading
+    background-color: $colorBasic
+    padding: 0.5rem
+    color: white
+
+    &_error
+      background-color: darkred
+
+  &__content
+    padding: 1rem 0.5rem
+    min-height: 115px
+    display: flex
+    flex-direction: column
+    gap: 1rem
+    justify-content: center
+    align-items: center
+
+  &__btn
+    display: flex
+    justify-content: space-between
