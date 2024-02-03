@@ -7,7 +7,10 @@ use Twig\Error\SyntaxError;
 
 class PageController extends Controller
 {
-    protected array $actionsPermissions = [];
+    protected array $actionsPermissions = [
+        'actionIndex' => ['admin', 'user'],
+        'actionError' => ['admin', 'user'],
+    ];
 
     public function actionIndex(): string
     {

@@ -9,7 +9,9 @@ use Twig\Error\SyntaxError;
 
 class SiteController extends Controller
 {
-    protected array $actionsPermissions = [];
+    protected array $actionsPermissions = [
+        'actionInfo' => ['admin', 'user']
+    ];
 
     public function actionInfo(): string
     {

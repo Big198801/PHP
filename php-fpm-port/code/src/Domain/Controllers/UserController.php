@@ -9,12 +9,15 @@ use Myproject\Application\Domain\Models\User;
 class UserController extends Controller
 {
     protected array $actionsPermissions = [
-        'actionIndex' => ['admin'],
+        'actionIndex' => ['admin', 'user'],
+        'actionHash' => ['admin', 'user'],
+        'actionAuth' => ['admin', 'user'],
+        'actionLogin' => ['admin', 'user'],
         'actionDelete' => ['admin'],
         'actionClear' => ['admin'],
         'actionUpdate' => ['admin'],
-        'actionSearch' => ['admin'],
-        'actionSave' => ['admin']];
+        'actionSearch' => ['admin', 'user'],
+        'actionSave' => ['admin', 'user']];
 
     public function actionIndex(): string
     {
