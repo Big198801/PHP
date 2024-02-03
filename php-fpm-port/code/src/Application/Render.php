@@ -2,6 +2,7 @@
 
 namespace Myproject\Application\Application;
 
+use Random\RandomException;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -26,10 +27,14 @@ class Render
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws RandomException
      */
     public function renderPage(string $contentTemplateName = 'page-index.twig', array $templateVariables = []): string
     {
         $template = $this->environment->load($contentTemplateName);
+
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $templateVariables['csrf_token'] =  $_SESSION['csrf_token'];
 
         $templateVariables['time'] = date('d-m-Y H:i');
 

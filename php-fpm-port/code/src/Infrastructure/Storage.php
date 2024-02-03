@@ -7,22 +7,22 @@ use \PDO;
 
 class Storage
 {
-    private PDO $connection;
+    private static ?PDO $connection = null;
 
-    public function __construct()
+    private function __construct() {}
+    private function __clone() {}
+
+    public static function get(): PDO
     {
-        $this->connection = new PDO(
-            Application::$config->get()['database']['DSN'],
-            Application::$config->get()['database']['USER'],
-            Application::$config->get()['database']['PASSWORD'],
-            array(
+        if (self::$connection === null) {
+            $dsn = Application::$config->get()['db_dsn']['DSN'];
+            $user = Application::$config->get()['db_user']['USER'];
+            $password = Application::$config->get()['db_pass']['PASSWORD'];
+
+            self::$connection = new PDO($dsn, $user, $password, [
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-            )
-        );
-    }
-
-    public function get(): PDO
-    {
-        return $this->connection;
+            ]);
+        }
+        return self::$connection;
     }
 }

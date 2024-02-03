@@ -1,7 +1,8 @@
 <section class="operation">
-    <form action="/user/save/" method="get">
+    <form action="/user/save/" method="post">
         <fieldset>
             <legend>Добавить пользователя</legend>
+            <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <label for="name">Имя
                 <input id="name" name="name" type="text" placeholder="Иван" required autofocus>
             </label>

@@ -2,16 +2,15 @@
 
 namespace Myproject\Application\Domain\Models;
 
-use Myproject\Application\Application\Application;
 use Myproject\Application\Infrastructure\Storage;
 use \PDO;
 
 class User
 {
-    private ?int $userId;
-    private ?string $userName;
-    private ?string $userLastname;
-    private ?int $userBirthday; // ? - также может быть null
+    private ?int $id_user;
+    private ?string $user_name;
+    private ?string $user_lastname;
+    private ?int $user_birthday_timestamp; // ? - также может быть null
 
     private static int $lastPage = 1;
     private static int $userCount = 0;
@@ -28,13 +27,13 @@ class User
         ?string $userLastname = null,
         ?int    $userBirthday = null)
     {
-        $this->userId = $userId;
-        $this->userName = $userName;
-        $this->userLastname = $userLastname;
-        $this->userBirthday = $userBirthday;
+        $this->id_user = $userId;
+        $this->user_name = $userName;
+        $this->user_lastname = $userLastname;
+        $this->user_birthday_timestamp = $userBirthday;
 
         $sql = "SELECT COUNT(*) FROM users";
-        $handler = Application::$storage->get()->query($sql);
+        $handler = Storage::get()->query($sql);
 
         static::$userCount = $handler->fetchColumn();
         static::$lastPage = ceil(User::$userCount / 10);
@@ -42,37 +41,37 @@ class User
 
     public function getUserId(): ?int
     {
-        return $this->userId;
+        return $this->id_user;
     }
 
     public function getUserName(): ?string
     {
-        return $this->userName;
+        return $this->user_name;
     }
 
-    public function setUserName(string $userName): void
+    public function setUserName(string $user_name): void
     {
-        $this->userName = $userName;
+        $this->user_name = $user_name;
     }
 
     public function getUserLastname(): ?string
     {
-        return $this->userLastname;
+        return $this->user_lastname;
     }
 
-    public function setUserLastname(string $userLastname): void
+    public function setUserLastname(string $user_lastname): void
     {
-        $this->userLastname = $userLastname;
+        $this->user_lastname = $user_lastname;
     }
 
     public function getUserBirthday(): ?int
     {
-        return $this->userBirthday;
+        return $this->user_birthday_timestamp;
     }
 
-    public function setUserBirthday(string $userBirthday): void
+    public function setUserBirthday(string $user_birthday_timestamp): void
     {
-        $this->userBirthday = strtotime($userBirthday);
+        $this->user_birthday_timestamp = strtotime($user_birthday_timestamp);
     }
 
     public function generatePageNumbers(int $currentPage): array
@@ -104,17 +103,28 @@ class User
 
     public function validateRequestData(): bool
     {
-        if (
-            !empty($_GET['name']) &&
-            !empty($_GET['lastname']) &&
-            !empty($_GET['birthday']) &&
-            $this->validateDate($_GET['birthday'])
-        ) {
-            return true;
-        } else {
-            return false;
+        $result = true;
+
+        if (!(
+            !empty($_POST['name']) &&
+            !empty($_POST['lastname']) &&
+            !empty($_POST['birthday'])
+        )) {
+            $result = false;
         }
+
+        if (!preg_match('/^(\d{2}-\d{2}-\d{4})$/', $_POST['birthday']) &&
+            !$this->validateDate($_POST['birthday'])) {
+            $result = false;
+        }
+
+        if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token'] != $_POST['csrf_token']) {
+            $result = false;
+        }
+
+        return $result;
     }
+
 
     public function validateDate(string $date): bool
     {
@@ -151,9 +161,9 @@ class User
 
     public function setParamsFromRequestData(): void
     {
-        $this->userName = $_GET['name'];
-        $this->userLastname = $_GET['lastname'];
-        $this->setUserBirthday($_GET['birthday']);
+        $this->user_name = htmlspecialchars($_POST['name']);
+        $this->user_lastname = htmlspecialchars($_POST['lastname']);
+        $this->setUserBirthday($_POST['birthday']);
     }
 
     public function getAllUsersFromStorage(int $currentPage): ?array
@@ -163,52 +173,35 @@ class User
 
         $sql = "SELECT * FROM users ORDER BY id_user DESC LIMIT :limit OFFSET :offset";
 
-        $handler = Application::$storage->get()->prepare($sql);
+        $handler = Storage::get()->prepare($sql);
         $handler->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
         $handler->bindValue(':offset', $offset, PDO::PARAM_INT);
         $handler->execute();
 
-        $result = $handler->fetchAll();
-        $users = [];
-
-        foreach ($result as $item) {
-            $user = new User(
-                $item['id_user'],
-                $item['user_name'],
-                $item['user_lastname'],
-                $item['user_birthday_timestamp']
-            );
-            $users[] = $user;
-        }
-
-        return $users;
+        return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
     }
 
     public function saveUserFromStorage(): void
     {
-        $storage = new Storage();
-
         $sql = "INSERT INTO users(user_name, user_lastname, user_birthday_timestamp) VALUES (:user_name, :user_lastname, :user_birthday)";
 
-        $handler = $storage->get()->prepare($sql);
+        $handler = Storage::get()->prepare($sql);
 
         $handler->execute([
-            'user_name' => $this->userName,
-            'user_lastname' => $this->userLastname,
-            'user_birthday' => $this->userBirthday
+            'user_name' => $this->user_name,
+            'user_lastname' => $this->user_lastname,
+            'user_birthday' => $this->user_birthday_timestamp
         ]);
     }
 
     public function deleteUserFromStorage(): string
     {
-        $storage = new Storage();
-
         $sql = "DELETE FROM users WHERE id_user = :id_user";
 
-        $handler = $storage->get()->prepare($sql);
+        $handler = Storage::get()->prepare($sql);
 
         $handler->execute([
-            'id_user' => $this->userId
+            'id_user' => $this->id_user
         ]);
 
         $rowCount = $handler->rowCount();
@@ -222,11 +215,9 @@ class User
 
     public function clearUsersFromStorage(): string
     {
-        $storage = new Storage();
-
         $sql = "DELETE FROM users";
 
-        $handler = $storage->get()->prepare($sql);
+        $handler = Storage::get()->query($sql);
 
         $handler->execute();
 
@@ -243,57 +234,41 @@ class User
             BETWEEN :current_date AND :ten_days_later
             ORDER BY DATE_FORMAT(FROM_UNIXTIME(user_birthday_timestamp), '%m-%d') ASC";
 
-        $handler = Application::$storage->get()->prepare($sql);
+        $handler = Storage::get()->prepare($sql);
         $handler->execute([
             'current_date' => $currentMonthDay,
             'ten_days_later' => $tenDaysLater
         ]);
 
-        $result = $handler->fetchAll();
-
-        $users = [];
-
-        foreach ($result as $item) {
-            $user = new User(
-                $item['id_user'],
-                $item['user_name'],
-                $item['user_lastname'],
-                $item['user_birthday_timestamp']
-            );
-            $users[] = $user;
-        }
-
-        return $users;
+        return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
     }
 
     public function updateUserFromStorage(): string
     {
-        $storage = new Storage();
-
         $updateFields = array();
         $updateValues = array();
 
-        if (!empty($this->userName)) {
+        if (!empty($this->user_name)) {
             $updateFields[] = 'user_name = :user_name';
-            $updateValues['user_name'] = $this->userName;
+            $updateValues['user_name'] = $this->user_name;
         }
 
-        if (!empty($this->userLastname)) {
+        if (!empty($this->user_lastname)) {
             $updateFields[] = 'user_lastname = :user_lastname';
-            $updateValues['user_lastname'] = $this->userLastname;
+            $updateValues['user_lastname'] = $this->user_lastname;
         }
 
-        if (!empty($this->userBirthday)) {
+        if (!empty($this->user_birthday_timestamp)) {
             $updateFields[] = 'user_birthday_timestamp = :user_birthday';
-            $updateValues['user_birthday'] = $this->userBirthday;
+            $updateValues['user_birthday'] = $this->user_birthday_timestamp;
         }
 
         if (!empty($updateFields)) {
             $sql = 'UPDATE users SET ' . implode(', ', $updateFields) . ' WHERE id_user = :id_user';
 
-            $handler = $storage->get()->prepare($sql);
+            $handler = Storage::get()->prepare($sql);
 
-            $updateValues['id_user'] = $this->userId;
+            $updateValues['id_user'] = $this->id_user;
             $handler->execute($updateValues);
 
             return true;

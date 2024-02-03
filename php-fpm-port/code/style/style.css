@@ -167,6 +167,7 @@ button {
   color: white;
   background-color: teal;
   transition: color 0.4s, background-color 0.4s, border-color 0.4s;
+  cursor: pointer;
 }
 button:hover {
   border-color: teal;

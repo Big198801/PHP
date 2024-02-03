@@ -3,6 +3,7 @@
 namespace Myproject\Application\Domain\Controllers;
 
 use Myproject\Application\Domain\Models\User;
+use Random\RandomException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -13,13 +14,14 @@ class UserController extends Controller
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws RandomException
      */
     public function actionIndex(): string
     {
         $user = new User();
         $currentPage = $_GET['page'] ?? 1;
         $alert = $_GET['alert'] ?? false;
-        $message = isset($_GET['alert_message']) ? urldecode($_GET['alert_message']) : "База пуста";
+        $message = $_SESSION['alert_message'] ?? "База пуста";
 
         return $this->render->renderPage(
             'user-index.twig',
@@ -33,63 +35,77 @@ class UserController extends Controller
             ]);
     }
 
-    public function actionSave(): string
+    public function actionSave(): void
     {
         $user = new User();
         if ($user->validateRequestData()) {
             $user->setParamsFromRequestData();
             $user->saveUserFromStorage();
 
-            $message = urlencode("Пользователь добавлен");
-            return header("Location: /user/index/?alert=true&alert_message=" . $message);
+            $_SESSION['alert_message'] = "Пользователь добавлен";
+            header("Location: /user/index/?alert=true");
+            die();
         } else {
             throw new \Exception("Данные не корректны");
         }
     }
 
-    public function actionDelete(): string
+    public function actionDelete(): void
     {
         $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
         $user = new User($id);
-        $message = urlencode($user->deleteUserFromStorage());
 
-        return header("Location: /user/index/?alert=true&alert_message=" . $message);
+        $_SESSION['alert_message'] = $user->deleteUserFromStorage();
+        header("Location: /user/index/?alert=true");
     }
 
-    public function actionClear(): string
+    public function actionClear(): void
     {
-        $message = urlencode((new User())->clearUsersFromStorage());
-
-        return header("Location: /user/index/?alert=true&alert_message=" . $message);
+        $_SESSION['alert_message'] = (new User())->clearUsersFromStorage();
+        header("Location: /user/index/?alert=true");
+        die();
     }
 
     /**
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws RandomException
      */
     public function actionSearch(): string
     {
+        $_SESSION['alert_message'] = "Пусто";
         return $this->render->renderPage(
             'user-index.twig',
             [
-                'alert_message' => "Пусто",
                 'users' => (new User())->searchTodayBirthday()
             ]);
     }
 
-    public function actionEdit(): string
+    public function actionUpdate(): void
     {
         $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
-        $user = new User($id, $_GET['name'], $_GET['lastname']);
-        $user->setUserBirthday($_GET['birthday']);
 
-        if ($user->updateUserFromStorage() && $user->validateDate($_GET['birthday'])) {
-            $message = urlencode("Пользователь изменен");
+        $user = new User($id);
 
-            return header("Location: /user/index/?alert=true&alert_message=" . $message);
+        if (isset($_GET['name']))
+            $user->setUserName($_GET['name']);
+
+        if (isset($_GET['lastname'])) {
+            $user->setUserLastname($_GET['lastname']);
+        }
+
+        if (isset($_GET['birthday']) && $user->validateDate($_GET['birthday'])) {
+            $user->setUserBirthday($_GET['birthday']);
+        }
+
+        if ($user->updateUserFromStorage()) {
+
+            $_SESSION['alert_message'] = "Пользователь изменен";
+            header("Location: /user/index/?alert=true");
+            die();
         } else {
-            throw new \Exception("Данные не корректны");
+            throw new \Exception("Пользователь не изменен, проверьте данные");
         }
     }
 }
