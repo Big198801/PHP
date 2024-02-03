@@ -13,6 +13,7 @@ class UserController extends Controller
         'actionHash' => ['admin', 'user'],
         'actionAuth' => ['admin', 'user'],
         'actionLogin' => ['admin', 'user'],
+        'actionLogout' => ['admin', 'user'],
         'actionDelete' => ['admin'],
         'actionClear' => ['admin'],
         'actionUpdate' => ['admin'],
@@ -113,9 +114,8 @@ class UserController extends Controller
 
     public function actionAuth(): string
     {
-        return $this->render->renderPageWithForm(
-            [
-                'title' => 'Форма логина',
+        return $this->render->renderPageWithForm([
+                'title' => 'Авторизация',
             ]);
     }
 
@@ -127,12 +127,24 @@ class UserController extends Controller
         }
         if (!$result) {
             return $this->render->renderPageWithForm([
-                'title' => 'Форма логина',
-                'auth-success' => false,
-                'auth-error' => 'Неверные логин или пароль'
+                'title' => 'Авторизация',
+                'alert_message' => 'Неверные логин или пароль',
+                'alert' => true,
+                'alert_head' => 'Ошибка'
             ]);
         } else {
-            throw new \Exception("Нет доступа");
+            header('Location: /');
+            return "";
         }
+    }
+
+    public function actionLogout(): void {
+
+        unset($_SESSION['user_authorized']);
+
+        session_destroy();
+
+        header("Location: /");
+        die();
     }
 }

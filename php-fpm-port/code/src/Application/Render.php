@@ -53,7 +53,7 @@ class Render
 
     public function renderPageWithForm(array $templateVariables = []): string
     {
-        $template = $this->environment->load('user-Auth.twig');
+        $template = $this->environment->load('user-login.twig');
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         $templateVariables['csrf_token'] = $_SESSION['csrf_token'];;

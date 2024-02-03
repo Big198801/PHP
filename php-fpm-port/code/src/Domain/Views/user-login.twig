@@ -1,0 +1,35 @@
+{% if alert %}
+    <script type="text/javascript">
+        window.onload = function () {
+            showAlert();
+        };
+    </script>
+{% endif %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style/form.css">
+</head>
+<body>
+<div class="wrapper">
+    <form action="/user/login/" method="post">
+        <h1 class="title">Привет</h1>
+        <p class="text">С возвращением</p>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="text" name="login" placeholder="Введите имя пользователя">
+        <input type="password" name="password" placeholder="Введите пароль">
+        <button type="submit">Вход</button>
+    </form>
+</div>
+{% include 'site-alert.twig' %}
+<script src="/script/script.js"></script>
+</body>
+</html>
