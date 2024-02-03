@@ -41,6 +41,42 @@ li {
   width: 100%;
 }
 
+.glow {
+  display: block;
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 18px;
+  font-family: sans-serif;
+  text-decoration: none;
+  color: #333;
+  border: 2px solid #333;
+  letter-spacing: 2px;
+  text-align: center;
+  position: relative;
+  transition: all 0.35s;
+}
+.glow span {
+  position: relative;
+  z-index: 2;
+}
+.glow:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: teal;
+  transition: all 0.35s;
+}
+.glow:hover {
+  color: #fff;
+}
+.glow:hover:after {
+  width: 100%;
+}
+
 .error {
   display: flex;
   flex-direction: column;

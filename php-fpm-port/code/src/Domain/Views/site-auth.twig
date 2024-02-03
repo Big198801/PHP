@@ -1,0 +1,5 @@
+{% if not user_authorized %}
+    <p><a class="glow" href="/user/auth"><span>Вход в систему</span></a></p>
+{% else %}
+    <p>Добро пожаловать на сайт!</p>
+{% endif %}

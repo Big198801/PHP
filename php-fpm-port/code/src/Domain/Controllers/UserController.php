@@ -2,20 +2,20 @@
 
 namespace Myproject\Application\Domain\Controllers;
 
+use Myproject\Application\Application\Application;
+use Myproject\Application\Application\Auth;
 use Myproject\Application\Domain\Models\User;
-use Random\RandomException;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class UserController extends Controller
 {
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     * @throws RandomException
-     */
+    protected array $actionsPermissions = [
+        'actionIndex' => ['admin'],
+        'actionDelete' => ['admin'],
+        'actionClear' => ['admin'],
+        'actionUpdate' => ['admin'],
+        'actionSearch' => ['admin'],
+        'actionSave' => ['admin']];
+
     public function actionIndex(): string
     {
         $user = new User();
@@ -66,12 +66,6 @@ class UserController extends Controller
         die();
     }
 
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     * @throws RandomException
-     */
     public function actionSearch(): string
     {
         $_SESSION['alert_message'] = "Пусто";
@@ -106,6 +100,36 @@ class UserController extends Controller
             die();
         } else {
             throw new \Exception("Пользователь не изменен, проверьте данные");
+        }
+    }
+
+    public function actionHash(): string
+    {
+        return Auth::getPasswordHash($_GET['pass_string']);
+    }
+
+    public function actionAuth(): string
+    {
+        return $this->render->renderPageWithForm(
+            [
+                'title' => 'Форма логина',
+            ]);
+    }
+
+    public function actionLogin(): string
+    {
+        $result = false;
+        if (isset($_POST['login']) && isset($_POST['password'])) {
+            $result = Application::$auth->proceedAuth($_POST['login'], $_POST['password']);
+        }
+        if (!$result) {
+            return $this->render->renderPageWithForm([
+                'title' => 'Форма логина',
+                'auth-success' => false,
+                'auth-error' => 'Неверные логин или пароль'
+            ]);
+        } else {
+            throw new \Exception("Нет доступа");
         }
     }
 }

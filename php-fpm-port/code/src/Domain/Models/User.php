@@ -10,7 +10,9 @@ class User
     private ?int $id_user;
     private ?string $user_name;
     private ?string $user_lastname;
-    private ?int $user_birthday_timestamp; // ? - также может быть null
+    private ?int $user_birthday_timestamp;
+    private ?string $login;
+    private ?string $password_hash;
 
     private static int $lastPage = 1;
     private static int $userCount = 0;

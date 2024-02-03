@@ -2,8 +2,8 @@
 
 namespace Myproject\Application\Application;
 
+use Myproject\Application\Domain\Controllers\Controller;
 use Myproject\Application\Infrastructure\Config;
-use Myproject\Application\Infrastructure\Storage;
 
 final class Application
 {
@@ -13,11 +13,12 @@ final class Application
     private string $methodName;
 
     public static Config $config;
-    public static Storage $storage;
+    public static Auth $auth;
 
     public function __construct()
     {
         Application::$config = new Config();
+        Application::$auth = new Auth();
     }
 
     public function run(): ?string
@@ -46,17 +47,40 @@ final class Application
             if (method_exists($this->controllerName, $this->methodName)) {
                 $controllerInstance = new $this->controllerName();
 
-                return call_user_func_array(
-                        [$controllerInstance, $this->methodName],
-                        []
-                    );
+                if ($controllerInstance instanceof Controller) {
+
+                    if ($this->checkAccessToMethod($controllerInstance, $this->methodName)) {
+                        return call_user_func_array([$controllerInstance, $this->methodName], []);
+                    } else {
+                        throw new \Exception('Нет доступа к методу');
+                    }
+                } else {
+                    return call_user_func_array([$controllerInstance, $this->methodName], []);
+                }
             } else {
-                header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+                header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
                 return header("Location: /404.html");
             }
         } else {
-            header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+            header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found", true, 404);
             return header("Location: /404.html");
         }
+    }
+
+    private function checkAccessToMethod(Controller $controllerInstance, string $methodName): bool
+    {
+        $userRoles = $controllerInstance->getUserRoles();
+        $rules = $controllerInstance->getActionsPermissions($methodName);
+        $isAllowed = false;
+
+        if (!empty($rules)) {
+            foreach ($rules as $rolePermission) {
+                if (in_array($rolePermission, $userRoles)) {
+                    $isAllowed = true;
+                    break;
+                }
+            }
+        }
+        return $isAllowed;
     }
 }

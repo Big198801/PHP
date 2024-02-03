@@ -9,11 +9,8 @@ use Twig\Error\SyntaxError;
 
 class SiteController extends Controller
 {
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
+    protected array $actionsPermissions = [];
+
     public function actionInfo(): string
     {
         $info = new SiteInfo();
