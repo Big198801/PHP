@@ -7,6 +7,7 @@
 body {
   background-color: #FFF;
   font-family: "Fira Code", monospace;
+  overflow-x: hidden;
 }
 
 a {
@@ -17,6 +18,29 @@ li {
   list-style: none;
 }
 
+.burger {
+  position: absolute;
+  display: none;
+  margin-left: 1rem;
+  margin-top: 1.5rem;
+  fill: teal;
+  border: 2px solid lightgrey;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem 0.2rem;
+}
+
+#burger {
+  position: absolute;
+  left: -99px;
+  visibility: hidden;
+}
+#burger:checked ~ .navbar {
+  left: 0;
+}
+#burger:checked + .burger {
+  left: 290px;
+}
+
 .navbar {
   height: 100vh;
   padding: 3rem 0;
@@ -25,6 +49,7 @@ li {
   position: fixed;
   text-shadow: 1px 1px 1px black;
   background-color: darkslategray;
+  transition: left 0.3s;
 }
 .navbar ul {
   display: flex;
@@ -300,6 +325,21 @@ button:hover {
 .alert__btn {
   display: flex;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 1160px) {
+  .navbar {
+    left: -290px;
+  }
+  .burger {
+    display: block;
+  }
+  .container {
+    padding-left: 0;
+  }
+  .header {
+    padding-left: 6rem;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
