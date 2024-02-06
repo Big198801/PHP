@@ -2,6 +2,7 @@
 
 namespace Myproject\Application\Domain\Controllers;
 
+use JetBrains\PhpStorm\NoReturn;
 use Myproject\Application\Application\Application;
 use Myproject\Application\Application\Auth;
 use Myproject\Application\Domain\Models\User;
@@ -42,8 +43,12 @@ class UserController extends Controller
     public function actionSave(): void
     {
         $user = new User();
-        if ($user->validateRequestData()) {
-            $user->setParamsFromRequestData();
+        $name = $_POST['name'] ?? '';
+        $lastname = $_POST['lastname'] ?? '';
+        $birthday = $_POST['lastname'] ?? '';
+
+        if ($this->validate->validateRequestData($name, $lastname, $birthday)) {
+            $user->setParamsFromRequestData($name, $lastname, $birthday);
             $user->saveUserFromStorage();
 
             $_SESSION['alert_message'] = "Пользователь добавлен";
@@ -63,7 +68,7 @@ class UserController extends Controller
         header("Location: /user/index/?alert=true");
     }
 
-    public function actionClear(): void
+    #[NoReturn] public function actionClear(): void
     {
         $_SESSION['alert_message'] = (new User())->clearUsersFromStorage();
         header("Location: /user/index/?alert=true");
@@ -86,15 +91,21 @@ class UserController extends Controller
 
         $user = new User($id);
 
-        if (isset($_GET['name']))
-            $user->setUserName($_GET['name']);
+        $name = $_GET['name'] ?? '';
+        $lastname = $_GET['lastname'] ?? '';
+        $birthday = $_GET['birthday'] ?? '';
 
-        if (isset($_GET['lastname'])) {
-            $user->setUserLastname($_GET['lastname']);
+        if ($this->validate->validateNameOrLastname($name)) {
+            $user->setUserName($name);
         }
 
-        if (isset($_GET['birthday']) && $user->validateDate($_GET['birthday'])) {
-            $user->setUserBirthday($_GET['birthday']);
+
+        if ($this->validate->validateNameOrLastname($lastname)) {
+            $user->setUserLastname($lastname);
+        }
+
+        if ($this->validate->validateDate($birthday)) {
+            $user->setUserBirthday($birthday);
         }
 
         if ($user->updateUserFromStorage()) {
@@ -115,8 +126,8 @@ class UserController extends Controller
     public function actionAuth(): string
     {
         return $this->render->renderPageWithForm([
-                'title' => 'Авторизация',
-            ]);
+            'title' => 'Авторизация',
+        ]);
     }
 
     public function actionLogin(): string
@@ -138,7 +149,8 @@ class UserController extends Controller
         }
     }
 
-    public function actionLogout(): void {
+    #[NoReturn] public function actionLogout(): void
+    {
 
         unset($_SESSION['user_authorized']);
 

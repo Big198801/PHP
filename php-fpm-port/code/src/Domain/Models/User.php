@@ -103,69 +103,11 @@ class User
         return $pageNumbers;
     }
 
-    public function validateRequestData(): bool
+    public function setParamsFromRequestData(string $name, string $lastname, string $date): void
     {
-        $result = true;
-
-        if (!(
-            !empty($_POST['name']) &&
-            !empty($_POST['lastname']) &&
-            !empty($_POST['birthday'])
-        )) {
-            $result = false;
-        }
-
-        if (!preg_match('/^(\d{2}-\d{2}-\d{4})$/', $_POST['birthday']) &&
-            !$this->validateDate($_POST['birthday'])) {
-            $result = false;
-        }
-
-        if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token'] != $_POST['csrf_token']) {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-
-    public function validateDate(string $date): bool
-    {
-        $dateBlocks = explode("-", $date);
-
-        if (count($dateBlocks) !== 3) {
-            return false;
-        }
-
-        $day = $dateBlocks[0];
-        $month = $dateBlocks[1];
-        $year = $dateBlocks[2];
-
-        $leap = $year % 4 == 0 && $year % 100 != 0 || $year % 400 == 0;
-
-        if (is_numeric($day) && $day > 0 && $day < 32) {
-            if (in_array($month, [4, 6, 9, 11]) && $day > 30) return false;
-            elseif ($leap && $month == 2 && $day > 29) return false;
-            elseif (!$leap && $month == 2 && $day > 28) return false;
-        } else {
-            return false;
-        }
-
-        if (!is_numeric($month) || $month < 1 || $month > 12) {
-            return false;
-        }
-
-        if (!is_numeric($year) || $year < 1900 || $year > date('Y')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function setParamsFromRequestData(): void
-    {
-        $this->user_name = htmlspecialchars($_POST['name']);
-        $this->user_lastname = htmlspecialchars($_POST['lastname']);
-        $this->setUserBirthday($_POST['birthday']);
+        $this->user_name = htmlspecialchars($name);
+        $this->user_lastname = htmlspecialchars($lastname);
+        $this->setUserBirthday($date);
     }
 
     public function getAllUsersFromStorage(int $currentPage): ?array

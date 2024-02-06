@@ -3,16 +3,20 @@
 namespace Myproject\Application\Domain\Controllers;
 
 use Myproject\Application\Application\Render;
+use Myproject\Application\Domain\Models\Validate;
 use Myproject\Application\Infrastructure\Storage;
 
 class Controller
 {
     protected Render $render;
+
+    protected Validate $validate;
     protected array $actionsPermissions = [];
 
     public function __construct()
     {
         $this->render = new Render();
+        $this->validate = new Validate();
     }
 
     public function getUserRoles(): array
