@@ -23,9 +23,13 @@
     <form action="/user/login/" method="post">
         <h1 class="title">Привет</h1>
         <p class="text">С возвращением</p>
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <input type="text" name="login" placeholder="Введите имя пользователя">
-        <input type="password" name="password" placeholder="Введите пароль">
+        <input class="input" type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input class="input" type="text" name="login" placeholder="Введите имя пользователя">
+        <input class="input" type="password" name="password" placeholder="Введите пароль">
+        <div class="check">
+            <input type="checkbox" name="remember" id="remember">
+            <label for="remember">Запомнить меня</label>
+        </div>
         <button type="submit">Вход</button>
     </form>
 </div>

@@ -29,9 +29,30 @@ class Auth
             $_SESSION['user_lastname'] = $result[0]['user_lastname'];
             $_SESSION['id_user'] = $result[0]['id_user'];
 
+            if (isset($_POST['remember'])) {
+                $this->authCookie();
+            }
+
             return true;
         } else {
             return false;
         }
+    }
+
+    public function authCookie(): void
+    {
+        $token = bin2hex(random_bytes(32));
+        setcookie('remember_token', $token, time() + 3600 * 24, '/');
+
+        $sql = 'UPDATE users SET remember_token = :remember_token WHERE id_user = :id_user';
+
+        $handler = Storage::get()->prepare($sql);
+
+        $updateValues = [
+            'remember_token' => $token,
+            'id_user' => $_SESSION['id_user']
+        ];
+
+        $handler->execute($updateValues);
     }
 }

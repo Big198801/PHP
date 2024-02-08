@@ -13,6 +13,7 @@ class User
     private ?int $user_birthday_timestamp;
     private ?string $login;
     private ?string $password_hash;
+    private ?string $remember_token;
 
     private static int $lastPage = 1;
     private static int $userCount = 0;
@@ -39,6 +40,11 @@ class User
 
         static::$userCount = $handler->fetchColumn();
         static::$lastPage = ceil(User::$userCount / 10);
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->remember_token;
     }
 
     public function getUserId(): ?int
@@ -123,6 +129,20 @@ class User
         $handler->execute();
 
         return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
+    }
+
+    public function getAllUserCookie(string $cookie): ?array
+    {
+        if (!empty($cookie)) {
+            $sql = 'SELECT * FROM users WHERE remember_token = :remember_token';
+
+            $handler = Storage::get()->prepare($sql);
+            $handler->bindValue(':remember_token', $cookie);
+            $handler->execute();
+            return $handler->fetchAll();
+        } else {
+            return null;
+        }
     }
 
     public function saveUserFromStorage(): void

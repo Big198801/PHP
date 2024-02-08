@@ -29,24 +29,13 @@ class Render
 
         if (isset($_SESSION['user_name'])) {
             $templateVariables['user_authorized'] = true;
+            $templateVariables['user_name'] = $_SESSION['user_name'];
         }
 
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         $templateVariables['csrf_token'] = $_SESSION['csrf_token'];
 
         $templateVariables['time'] = date('d-m-Y H:i');
-
-        return $template->render($templateVariables);
-    }
-
-    public function renderExceptionPage(string $error): string
-    {
-        $template = $this->environment->load('page-index.twig');
-
-        $templateVariables['time'] = date('d-m-Y H:i');
-        $templateVariables['alert_message'] = $error;
-        $templateVariables['alert_head'] = 'Ошибка';
-        $templateVariables['alert'] = true;
 
         return $template->render($templateVariables);
     }

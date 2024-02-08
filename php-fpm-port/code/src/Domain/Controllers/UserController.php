@@ -99,7 +99,6 @@ class UserController extends Controller
             $user->setUserName($name);
         }
 
-
         if ($this->validate->validateNameOrLastname($lastname)) {
             $user->setUserLastname($lastname);
         }
@@ -125,9 +124,22 @@ class UserController extends Controller
 
     public function actionAuth(): string
     {
-        return $this->render->renderPageWithForm([
-            'title' => 'Авторизация',
-        ]);
+        $remember = $_COOKIE['remember_token'] ?? '';
+        $user = (new User())->getAllUserCookie($remember);
+
+        if (!empty($user)) {
+
+            $_SESSION['user_name'] = $user[0]['user_name'];
+            $_SESSION['user_lastname'] = $user[0]['user_lastname'];
+            $_SESSION['id_user'] = $user[0]['id_user'];
+
+            header('Location: /');
+            die();
+        } else {
+            return $this->render->renderPageWithForm([
+                'title' => 'Авторизация',
+            ]);
+        }
     }
 
     public function actionLogin(): string
@@ -145,7 +157,7 @@ class UserController extends Controller
             ]);
         } else {
             header('Location: /');
-            return "";
+            die();
         }
     }
 
