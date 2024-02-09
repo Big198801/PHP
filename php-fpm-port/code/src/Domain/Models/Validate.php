@@ -60,4 +60,9 @@ class Validate
 
         return true;
     }
+
+    public function validatePassword(string $password): bool {
+        $pattern = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+]).{8,16}$/";
+        return (!empty($data) && preg_match($pattern, $password));
+    }
 }
