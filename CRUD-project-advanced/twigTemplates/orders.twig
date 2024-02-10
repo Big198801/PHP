@@ -1,0 +1,28 @@
+{% if error %}
+    <h2><?=$error?></h2>
+{% else %}
+    <h2>
+        {% if partOrders != 'all' %}
+            Мои заказы
+        {% else %}
+            Перечень заказов
+        {% endif %}
+    </h2>
+    <table cellspacing="0">
+        <tr>
+            <th>Дата/время</th>
+            <th>№ заказа</th>
+            <th>Сумма</th>
+            <th>Статус</th>
+        </tr>        
+        <tbody id="orders">
+        </tbody>
+    </table>  
+    <script src="/js/orderList.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", event => {
+            let orders = new Orders('orders', {{ page_size | default(10) }}, '/api/orderList/{{ partOrders | default('my') }}');
+            orders.fillVisible();
+        });
+    </script>
+{% endif %}   

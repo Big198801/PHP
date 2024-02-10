@@ -1,0 +1,35 @@
+<script src="/js/feedback.js"></script>
+<script>
+    function setValuesInForm(id="", message="", user="{{ userName }}", action="add") {
+        document.getElementById("fb_id").value = id;
+        document.getElementById("fb_message").value = message;
+        document.getElementById("fb_name").value = user;
+        document.getElementById('send_feedback').innerText = (action=="edit") ? "Изменить" : "Отправить";
+        document.getElementById("fb_form").dataset['action'] = action;
+    }
+
+    document.addEventListener("DOMContentLoaded", event => {
+        let feedback = new Feedback('feedback', {{ page_size | default(10) }}, '/api/feedback', 'feedback-item', 'fb_form',
+        "{{ categoryFeedback }}" , "{{ groupId }}"
+        );
+        
+        feedback.addEditEventListener(id => {
+            let el = document.querySelector('#'+id+' div');
+            setValuesInForm(el.dataset['id'], el.dataset['message'], el.dataset['name'], 'edit');
+        });
+
+        let el_form = document.getElementById("fb_form");
+        el_form.addEventListener('submit', event => {
+            feedback.doFeedBack(
+                el_form.dataset['action'],
+                document.getElementById("fb_id").value,
+                document.getElementById("fb_name").value,
+                document.getElementById("fb_message").value
+            );
+            setValuesInForm();
+            event.preventDefault();
+        });
+
+        feedback.fillVisible();
+    });
+</script>

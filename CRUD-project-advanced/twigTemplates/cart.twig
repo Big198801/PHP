@@ -1,0 +1,56 @@
+<h2>Корзина</h2>
+<div id="cart" class="cart">
+</div>
+<hr>
+<div class="total_cart" id="total_cart"></div>
+<div class="clearfix"></div>
+
+<div class="auth-form" id="make_order">
+<h3>Оформление заказа:</h3>
+<form action="" method="post">
+    <input type="text" name="name" placeholder="Ваше имя" required value="{{ userName }}">
+    <input type="text" id="tel" placeholder="Ваш номер телефона" class="phone" name="phone" required>
+    <input type="text" placeholder="Адрес" name="address" required>
+    <div class="error_message">{{ error }}</div>
+    <button type="submit" class="black-button">Оформить заказ</button>
+</form>
+</div>
+<script src="/js/cart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", event => {
+        let cart = new Cart('cart', {{ page_size }});
+        cart.fillVisible();
+        
+        function setCursorPosition(pos, elem) {
+            elem.focus();
+            if (elem.setSelectionRange) elem.setSelectionRange(pos, pos);
+            else if (elem.createTextRange) {
+                let range = elem.createTextRange();
+                range.collapse(true);
+                range.moveEnd("character", pos);
+                range.moveStart("character", pos);
+                range.select();
+                }
+            }
+            
+        function mask(event) {
+            let matrix = "+7 (___) ___ ____",
+            i = 0,
+            def = matrix.replace(/\D/g, ""),
+            val = this.value.replace(/\D/g, "");
+            if (def.length >= val.length) val = def;
+            this.value = matrix.replace(/./g, function(a) {
+                return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a
+                });
+                
+            if (event.type == "blur") {
+                if (this.value.length == 2) this.value = ""
+                } else setCursorPosition(this.value.length, this)
+        };
+        
+        var input = document.querySelector("#tel");
+        input.addEventListener("input", mask, false);
+        input.addEventListener("focus", mask, false);
+        input.addEventListener("blur", mask, false);
+    });
+</script>

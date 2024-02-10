@@ -1,0 +1,73 @@
+{% if error %}
+    <h2>Неверная ссылка на заказ!</h2>
+    <br>
+     <p><a href="/" class="black-button">На главную</a></p>    
+{% else %}    
+    <h2>Заказ №{{ id }} от {{ date }}</h2>
+    {% if isAdmin %}
+        <p>Заказчик: <b>{{ name }}</b></p>
+        <p>Адрес: <b>{{ address }}</b></p>
+        <p>Телефон: <b><a href="tel:<{{ phone }}">{{ phone }}</a></b></p>
+        <form action="" method="post">
+            <input type="text" name="order_u_id" id="order_u_id" hidden value="{{ uId }}">
+            <label for="status">Статус:</label>
+            <select name="status" id="order_status">
+                {% for st in statuses %}
+                    <option {% if st == status %} selected {% endif %}>{{ st }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" id="status-change" class="black-button">Изменить</button>
+            <p id="order_message"></p>
+        </form>
+    {% else %}
+        <p>Статус: <b>{{ status }}</b></p>    
+    {% endif %}    
+    <hr>
+    <h3>Состав заказа:</h3>
+    <div>
+        {% set total = 0 %}
+        {% for item in items %}
+            <div class="cart__item">
+                <div>
+                    <a href="/catalog/{{ item.product.id }}">{{ item.product.name }}</a>
+                </div>    
+                <div class="cart__item_right">    
+                    <div>{{ item.quantity }} X {{ item.price }} = {{ item.price * item.quantity }} &#8381;</div>
+                </div>
+            </div>
+            {% set total = total + item.price * item.quantity %}
+        {% endfor %}
+    </div>
+    <p>Сумма: <b>{{ total }}  &#8381;</b></p></b></p>
+    <hr>
+
+{% if isAdmin %}
+<script>
+
+
+    document.addEventListener("DOMContentLoaded", event => {
+        var elMessage = document.getElementById("order_message");
+        document.getElementById("status-change").addEventListener('click', async (evt) => {
+            let answer = await application.postJson("/api/order/chageStatus", 
+                {
+                    'uId': '{{ uId }}',
+                    'status': document.getElementById("order_status").value,
+                }
+            );
+            if (!answer || answer.error) {
+                elMessage.innerText = "Что-то пошло не так...";
+            } else  {
+                if (answer.result) {
+                    elMessage.innerText = "Статус заказа изменен"; 
+                }
+                if (answer.error) {
+                    elMessage.innerText = answer.error;   
+                }	
+            }
+            evt.preventDefault();
+        });
+    });
+
+</script>
+{% endif %}    
+{% endif %}

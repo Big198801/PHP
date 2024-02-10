@@ -1,0 +1,24 @@
+<header class="header">
+    <div class="header__login">
+        <div></div>
+        {% if isAuth %}
+            <a class="header__login-href" id="user_name" href="/profile">{{ userName }}</a>            
+        {% else %}
+            <a class="header__login-href" href="/login">Вход</a>
+        {% endif %}
+    </div>
+    <div class="header__bottom">    
+    <div class="header__menu">
+        <a href="/">Главная</a>
+        <a href="/catalog">Каталог</a>
+        <a href="/news">Новости</a>
+        <a href="/feedback">Отзывы</a>
+        {% if isAdmin %}
+            <a href = "/admin">Админка</a>
+        {% endif %}    
+    </div>
+    <div class="header__cart">
+        <a id="header_cart" href="/cart">Корзина ({{ countInCart|default(0) }})</a>
+    </div> 
+    </div>   
+</header>

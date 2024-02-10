@@ -1,0 +1,16 @@
+<h2>Отзывы</h2>
+<p id="message">{{ message }}</p>
+
+<form id="fb_form" class="form-feedback" action="" method="post" data-action="add">
+    <p>Оставьте отзыв:</p>
+    <input id="fb_id" type="text" name="id" hidden>
+    <input id="fb_name" type="text" name="name" placeholder="Ваше имя" required value="{{ userName }}"><br>
+    <textarea  id="fb_message" name="feedback" placeholder="Ваш отзыв" rows="5" required></textarea><br>
+    <button type="submit" id="send_feedback" class="black-button">Отправить</button>
+</form>
+
+<hr>
+<div id="feedback" class="feedback">
+</div>
+
+{% include 'feedback-js.twig' %}

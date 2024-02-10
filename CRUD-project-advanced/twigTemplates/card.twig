@@ -1,0 +1,14 @@
+<h2>{{ item.name }}</h2>
+<div class="product-item">
+   <img class="product_item__img" src="/images/products/{{ item.image }}" alt="{{ item.name}}" >
+   <p>{{ item.description }}</p>
+   <div class="product_item__price">{{ item.price }} &#8381;</div><a href="javascript:void(0)" class="black-button btn-buy" data-id="{{ item.id }}">В корзину</a>
+</div>
+<hr>
+{% include 'feedback.twig' %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", event => {
+        application.addListenerToBtnBuy('.btn-buy');
+    });
+</script>

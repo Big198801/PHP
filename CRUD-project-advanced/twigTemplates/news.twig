@@ -1,0 +1,10 @@
+<h2>Новости</h2>
+<div id="news" class="news">
+</div>
+<script src="/js/news.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", event => {
+        let catalog = new News('news', {{ page_size }});
+        catalog.fillVisible();
+    });
+</script>
