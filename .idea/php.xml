@@ -12,11 +12,14 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-      <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/composer" />
       <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/twig/twig" />
       <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/symfony/polyfill-ctype" />
       <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/composer" />
+      <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/lesson_03/vendor/composer" />
+      <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor/composer" />
+      <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/hwork_03/vendor/composer" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

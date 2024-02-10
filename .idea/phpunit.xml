@@ -4,6 +4,8 @@
     <option name="directories">
       <list>
         <option value="$PROJECT_DIR$/php-fpm-port/code/tests" />
+        <option value="$PROJECT_DIR$/CRUD-project/tests" />
+        <option value="$PROJECT_DIR$/CRUD-project-advanced/tests" />
       </list>
     </option>
   </component>

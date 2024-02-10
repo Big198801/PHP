@@ -9,12 +9,20 @@
       <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_03/src" isTestSource="false" packagePrefix="App\Oop\" />
       <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_03/src/ex_book" isTestSource="false" packagePrefix="App\Oop\Book\" />
       <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_03/src/heroes" isTestSource="false" packagePrefix="App\Oop\Hero\" />
+      <sourceFolder url="file://$MODULE_DIR$/CRUD-project-advanced/" isTestSource="false" packagePrefix="app\" />
+      <sourceFolder url="file://$MODULE_DIR$/CRUD-project-advanced/facades" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CRUD-project-advanced/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/code/" isTestSource="false" packagePrefix="app\" />
+      <sourceFolder url="file://$MODULE_DIR$/php-fpm-port/code/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/code/vendor/symfony/polyfill-ctype" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/code/vendor/symfony/polyfill-mbstring" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/code/vendor/symfony/polyfill-php80" />
       <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/code/vendor/twig/twig" />
+      <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/hwork_03/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/archive_lesson/lesson_03/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/php-fpm-port/code/vendor/composer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

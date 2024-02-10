@@ -6,9 +6,12 @@ use JetBrains\PhpStorm\NoReturn;
 use Myproject\Application\Application\Application;
 use Myproject\Application\Application\Auth;
 use Myproject\Application\Domain\Models\User;
+use Myproject\Application\Domain\Models\UserRepository;
 
 class UserController extends Controller
 {
+    protected UserRepository $repository;
+
     protected array $actionsPermissions = [
         'actionIndex' => ['admin', 'user'],
         'actionHash' => ['admin', 'user'],
@@ -20,6 +23,13 @@ class UserController extends Controller
         'actionUpdate' => ['admin'],
         'actionSearch' => ['admin', 'user'],
         'actionSave' => ['admin']];
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->repository = new UserRepository();
+    }
+
 
     public function actionIndex(): string
     {
@@ -34,8 +44,8 @@ class UserController extends Controller
                 'alert_message' => $message,
                 'alert' => $alert,
                 'alert_head' => 'Результат',
-                'users' => $user->getAllUsersFromStorage($currentPage),
-                'pages' => $user->generatePageNumbers($currentPage),
+                'users' => $this->repository->getAllUsersFromStorage($currentPage),
+                'pages' => $this->repository->generatePageNumbers($currentPage),
                 'current_page' => $currentPage
             ]);
     }
@@ -49,7 +59,7 @@ class UserController extends Controller
 
         if ($this->validate->validateRequestData($name, $lastname, $birthday)) {
             $user->setParamsFromRequestData($name, $lastname, $birthday);
-            $user->saveUserFromStorage();
+            $this->repository->saveUserFromStorage($user);
 
             $_SESSION['alert_message'] = "Пользователь добавлен";
             header("Location: /user/index/?alert=true");
@@ -63,14 +73,14 @@ class UserController extends Controller
     {
         $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
 
-        $_SESSION['alert_message'] = (new User)->deleteUserFromStorage($id);
+        $_SESSION['alert_message'] = $this->repository->deleteUserFromStorage($id);
         header("Location: /user/index/?alert=true");
         die();
     }
 
     #[NoReturn] public function actionClear(): void
     {
-        $_SESSION['alert_message'] = (new User())->clearUsersFromStorage();
+        $_SESSION['alert_message'] = $this->repository->clearUsersFromStorage();
         header("Location: /user/index/?alert=true");
         die();
     }
@@ -81,14 +91,14 @@ class UserController extends Controller
         return $this->render->renderPage(
             'user-index.twig',
             [
-                'users' => (new User())->searchTodayBirthday()
+                'users' => $this->repository->searchTodayBirthday()
             ]);
     }
 
     public function actionUpdate(): void
     {
         $user = new User();
-        if ($user->exists($_GET['id'])) {
+        if ($this->repository->exists($_GET['id'])) {
 
             $name = $_GET['name'] ?? '';
             $lastname = $_GET['lastname'] ?? '';
@@ -111,7 +121,7 @@ class UserController extends Controller
                 $arrayData['user_birthday_timestamp'] = $user->getUserBirthday();
             }
 
-            if ($user->updateData('users', $arrayData, $arrayKey)) {
+            if ($this->repository->updateData('users', $arrayData, $arrayKey)) {
 
                 $_SESSION['alert_message'] = "Пользователь изменен";
                 header("Location: /user/index/?alert=true");
@@ -133,7 +143,7 @@ class UserController extends Controller
     public function actionAuth(): string
     {
         $remember = $_COOKIE['remember_token'] ?? '';
-        $user = (new User())->getAllUserCookie($remember);
+        $user = $this->repository->getAllUserCookie($remember);
 
         if (!empty($user)) {
 

@@ -2,7 +2,7 @@
 
 namespace Myproject\Application\Application;
 
-use Myproject\Application\Domain\Models\User;
+use Myproject\Application\Domain\Models\UserRepository;
 use Myproject\Application\Infrastructure\Storage;
 
 class Auth
@@ -31,7 +31,7 @@ class Auth
             $_SESSION['id_user'] = $result[0]['id_user'];
 
             if (isset($_POST['remember'])) {
-                (new User)->setCookie();
+                (new UserRepository())->setCookie();
             }
 
             return true;
