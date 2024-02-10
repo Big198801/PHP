@@ -2,6 +2,7 @@
 
 namespace Myproject\Application\Application;
 
+use Myproject\Application\Domain\Models\User;
 use Myproject\Application\Infrastructure\Storage;
 
 class Auth
@@ -15,7 +16,7 @@ class Auth
     {
         $sql = "SELECT id_user, user_name, user_lastname, password_hash FROM users WHERE login = :login";
 
-        $handler = Storage::get()->prepare($sql);
+        $handler = Storage::getInstance()->prepare($sql);
 
         $handler->execute([
             'login' => $login
@@ -30,29 +31,12 @@ class Auth
             $_SESSION['id_user'] = $result[0]['id_user'];
 
             if (isset($_POST['remember'])) {
-                $this->authCookie();
+                (new User)->setCookie();
             }
 
             return true;
         } else {
             return false;
         }
-    }
-
-    public function authCookie(): void
-    {
-        $token = bin2hex(random_bytes(32));
-        setcookie('remember_token', $token, time() + 3600 * 24 * 7, '/');
-
-        $sql = 'UPDATE users SET remember_token = :remember_token WHERE id_user = :id_user';
-
-        $handler = Storage::get()->prepare($sql);
-
-        $updateValues = [
-            'remember_token' => $token,
-            'id_user' => $_SESSION['id_user']
-        ];
-
-        $handler->execute($updateValues);
     }
 }

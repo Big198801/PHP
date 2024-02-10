@@ -36,10 +36,15 @@ class User
         $this->user_birthday_timestamp = $userBirthday;
 
         $sql = "SELECT COUNT(*) FROM users";
-        $handler = Storage::get()->query($sql);
+        $handler = Storage::getInstance()->query($sql);
 
         static::$userCount = $handler->fetchColumn();
         static::$lastPage = ceil(User::$userCount / 10);
+    }
+
+    public function setIdUser(?int $id_user): void
+    {
+        $this->id_user = $id_user;
     }
 
     public function getToken(): ?string
@@ -123,7 +128,7 @@ class User
 
         $sql = "SELECT * FROM users ORDER BY id_user DESC LIMIT :limit OFFSET :offset";
 
-        $handler = Storage::get()->prepare($sql);
+        $handler = Storage::getInstance()->prepare($sql);
         $handler->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
         $handler->bindValue(':offset', $offset, PDO::PARAM_INT);
         $handler->execute();
@@ -136,7 +141,7 @@ class User
         if (!empty($cookie)) {
             $sql = 'SELECT * FROM users WHERE remember_token = :remember_token';
 
-            $handler = Storage::get()->prepare($sql);
+            $handler = Storage::getInstance()->prepare($sql);
             $handler->bindValue(':remember_token', $cookie);
             $handler->execute();
             return $handler->fetchAll();
@@ -149,7 +154,7 @@ class User
     {
         $sql = "INSERT INTO users(user_name, user_lastname, user_birthday_timestamp) VALUES (:user_name, :user_lastname, :user_birthday)";
 
-        $handler = Storage::get()->prepare($sql);
+        $handler = Storage::getInstance()->prepare($sql);
 
         $handler->execute([
             'user_name' => $this->user_name,
@@ -158,14 +163,14 @@ class User
         ]);
     }
 
-    public function deleteUserFromStorage(): string
+    public function deleteUserFromStorage(int $id_user): string
     {
         $sql = "DELETE FROM users WHERE id_user = :id_user";
 
-        $handler = Storage::get()->prepare($sql);
+        $handler = Storage::getInstance()->prepare($sql);
 
         $handler->execute([
-            'id_user' => $this->id_user
+            'id_user' => $id_user
         ]);
 
         $rowCount = $handler->rowCount();
@@ -181,7 +186,7 @@ class User
     {
         $sql = "DELETE FROM users";
 
-        $handler = Storage::get()->query($sql);
+        $handler = Storage::getInstance()->query($sql);
 
         $handler->execute();
 
@@ -198,7 +203,7 @@ class User
             BETWEEN :current_date AND :ten_days_later
             ORDER BY DATE_FORMAT(FROM_UNIXTIME(user_birthday_timestamp), '%m-%d') ASC";
 
-        $handler = Storage::get()->prepare($sql);
+        $handler = Storage::getInstance()->prepare($sql);
         $handler->execute([
             'current_date' => $currentMonthDay,
             'ten_days_later' => $tenDaysLater
@@ -207,37 +212,66 @@ class User
         return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
     }
 
-    public function updateUserFromStorage(): string
+    public function exists(int $id_user): bool
     {
-        $updateFields = array();
-        $updateValues = array();
+        $sql = "SELECT count(id_user) as user_count FROM users WHERE id_user = :id_user";
 
-        if (!empty($this->user_name)) {
-            $updateFields[] = 'user_name = :user_name';
-            $updateValues['user_name'] = $this->user_name;
+        $handler = Storage::getInstance()->prepare($sql);
+        $handler->execute([
+            'id_user' => $id_user
+        ]);
+
+        $result = $handler->fetchAll();
+
+        if (count($result) > 0 && $result[0]['user_count'] > 0) {
+            return true;
+        } else {
+            return false;
         }
+    }
 
-        if (!empty($this->user_lastname)) {
-            $updateFields[] = 'user_lastname = :user_lastname';
-            $updateValues['user_lastname'] = $this->user_lastname;
-        }
+    public function updateData(string $tableName, array $userDataArray, array $whereData = []): bool
+    {
+        $count = count($userDataArray);
+        if ($count != 0) {
+            $sql = "UPDATE $tableName SET ";
 
-        if (!empty($this->user_birthday_timestamp)) {
-            $updateFields[] = 'user_birthday_timestamp = :user_birthday';
-            $updateValues['user_birthday'] = $this->user_birthday_timestamp;
-        }
+            $counter = 0;
+            foreach ($userDataArray as $key => $value) {
+                $sql .= $key . " = :" . $key;
 
-        if (!empty($updateFields)) {
-            $sql = 'UPDATE users SET ' . implode(', ', $updateFields) . ' WHERE id_user = :id_user';
+                if ($counter != $count - 1) {
+                    $sql .= ",";
+                } else if (count($whereData) == 1) {
+                    $sql .= " WHERE " . key($whereData) . " = :" . key($whereData);
+                    $userDataArray += $whereData;
+                }
+                $counter++;
+            }
 
-            $handler = Storage::get()->prepare($sql);
-
-            $updateValues['id_user'] = $this->id_user;
-            $handler->execute($updateValues);
+            $handler = Storage::getInstance()->prepare($sql);
+            $handler->execute($userDataArray);
 
             return true;
         } else {
             return false;
         }
+    }
+
+    public function setCookie(): void
+    {
+        $token = bin2hex(random_bytes(32));
+        setcookie('remember_token', $token, time() + 3600 * 24 * 7, '/');
+
+        $sql = 'UPDATE users SET remember_token = :remember_token WHERE id_user = :id_user';
+
+        $handler = Storage::getInstance()->prepare($sql);
+
+        $updateValues = [
+            'remember_token' => $token,
+            'id_user' => $_SESSION['id_user']
+        ];
+
+        $handler->execute($updateValues);
     }
 }

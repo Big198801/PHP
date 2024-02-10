@@ -19,7 +19,7 @@ class UserController extends Controller
         'actionClear' => ['admin'],
         'actionUpdate' => ['admin'],
         'actionSearch' => ['admin', 'user'],
-        'actionSave' => ['admin', 'user']];
+        'actionSave' => ['admin']];
 
     public function actionIndex(): string
     {
@@ -59,13 +59,13 @@ class UserController extends Controller
         }
     }
 
-    public function actionDelete(): void
+    #[NoReturn] public function actionDelete(): void
     {
         $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
-        $user = new User($id);
 
-        $_SESSION['alert_message'] = $user->deleteUserFromStorage();
+        $_SESSION['alert_message'] = (new User)->deleteUserFromStorage($id);
         header("Location: /user/index/?alert=true");
+        die();
     }
 
     #[NoReturn] public function actionClear(): void
@@ -87,33 +87,41 @@ class UserController extends Controller
 
     public function actionUpdate(): void
     {
-        $id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : 0;
+        $user = new User();
+        if ($user->exists($_GET['id'])) {
 
-        $user = new User($id);
+            $name = $_GET['name'] ?? '';
+            $lastname = $_GET['lastname'] ?? '';
+            $birthday = $_GET['birthday'] ?? '';
 
-        $name = $_GET['name'] ?? '';
-        $lastname = $_GET['lastname'] ?? '';
-        $birthday = $_GET['birthday'] ?? '';
+            $arrayData = [];
 
-        if ($this->validate->validateNameOrLastname($name)) {
-            $user->setUserName($name);
-        }
+            $arrayKey['id_user'] = $_GET['id'];
 
-        if ($this->validate->validateNameOrLastname($lastname)) {
-            $user->setUserLastname($lastname);
-        }
+            if ($this->validate->validateNameOrLastname($name)) {
+                $arrayData['user_name'] = $name;
+            }
 
-        if ($this->validate->validateDate($birthday)) {
-            $user->setUserBirthday($birthday);
-        }
+            if ($this->validate->validateNameOrLastname($lastname)) {
+                $arrayData['user_lastname'] = $lastname;
+            }
 
-        if ($user->updateUserFromStorage()) {
+            if ($this->validate->validateDate($birthday)) {
+                $user->setUserBirthday($birthday);
+                $arrayData['user_birthday_timestamp'] = $user->getUserBirthday();
+            }
 
-            $_SESSION['alert_message'] = "Пользователь изменен";
-            header("Location: /user/index/?alert=true");
-            die();
+            if ($user->updateData('users', $arrayData, $arrayKey)) {
+
+                $_SESSION['alert_message'] = "Пользователь изменен";
+                header("Location: /user/index/?alert=true");
+                die();
+
+            } else {
+                throw new \Exception("Пользователь не изменен, проверьте данные");
+            }
         } else {
-            throw new \Exception("Пользователь не изменен, проверьте данные");
+            throw new \Exception("Данный пользователь не найден");
         }
     }
 

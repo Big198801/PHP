@@ -21,7 +21,8 @@ class Validate
     }
 
     public function validateNameOrLastname(string $data): bool {
-        return (!empty($data) && preg_match("/^[-A-Za-zА-Яа-яЁё]+$/u", $data) && !preg_match("/<[^>]*>/", $data));
+        $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+        return (!empty($data) && preg_match("/^[-A-Za-zА-Яа-яЁё]+$/u", $data));
     }
 
     public function validateDate(string $date): bool
@@ -62,7 +63,7 @@ class Validate
     }
 
     public function validatePassword(string $password): bool {
-        $pattern = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_=+]).{8,16}$/";
+        $pattern = "/^(?=.*\d)(?=.*[A-Za-z])(?=.*[^\s\w])(^\S{8,16})$/";
         return (!empty($data) && preg_match($pattern, $password));
     }
 }

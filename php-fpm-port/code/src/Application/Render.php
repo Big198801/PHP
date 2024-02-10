@@ -34,6 +34,7 @@ class Render
 
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         $templateVariables['csrf_token'] = $_SESSION['csrf_token'];
+        $templateVariables['metrik'] = $_COOKIE['metrik'];
 
         $templateVariables['time'] = date('d-m-Y H:i');
 
