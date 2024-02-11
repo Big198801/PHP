@@ -27,7 +27,6 @@ class Auth
         if (!empty($result) && password_verify($password, $result[0]['password_hash'])) {
 
             $_SESSION['user_name'] = $result[0]['user_name'];
-            $_SESSION['user_lastname'] = $result[0]['user_lastname'];
             $_SESSION['id_user'] = $result[0]['id_user'];
 
             if (isset($_POST['remember'])) {

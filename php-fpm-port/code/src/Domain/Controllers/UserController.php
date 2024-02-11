@@ -57,7 +57,7 @@ class UserController extends Controller
         $lastname = $_POST['lastname'] ?? '';
         $birthday = $_POST['lastname'] ?? '';
 
-        if ($this->validate->validateRequestData($name, $lastname, $birthday)) {
+        if ($this->validate->validateRequestData([$name, $lastname, $birthday])) {
             $user->setParamsFromRequestData($name, $lastname, $birthday);
             $this->repository->saveUserFromStorage($user);
 
@@ -97,29 +97,14 @@ class UserController extends Controller
 
     public function actionUpdate(): void
     {
-        $user = new User();
         if ($this->repository->exists($_GET['id'])) {
 
             $name = $_GET['name'] ?? '';
             $lastname = $_GET['lastname'] ?? '';
             $birthday = $_GET['birthday'] ?? '';
 
-            $arrayData = [];
-
+            $arrayData = $this->validate->validateUserData($name, $lastname, $birthday);
             $arrayKey['id_user'] = $_GET['id'];
-
-            if ($this->validate->validateNameOrLastname($name)) {
-                $arrayData['user_name'] = $name;
-            }
-
-            if ($this->validate->validateNameOrLastname($lastname)) {
-                $arrayData['user_lastname'] = $lastname;
-            }
-
-            if ($this->validate->validateDate($birthday)) {
-                $user->setUserBirthday($birthday);
-                $arrayData['user_birthday_timestamp'] = $user->getUserBirthday();
-            }
 
             if ($this->repository->updateData('users', $arrayData, $arrayKey)) {
 
@@ -183,6 +168,8 @@ class UserController extends Controller
     {
 
         unset($_SESSION['user_authorized']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['id_user']);
 
         session_destroy();
 
