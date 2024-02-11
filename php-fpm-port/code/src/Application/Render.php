@@ -38,6 +38,13 @@ class Render
 
         $templateVariables['time'] = date('d-m-Y H:i');
 
+        /* временный код
+        ob_start();
+        \xdebug_info();
+        $xdebug = ob_get_clean();
+        $templateVariables['xdebug'] = $xdebug;
+        */
+
         return $template->render($templateVariables);
     }
 

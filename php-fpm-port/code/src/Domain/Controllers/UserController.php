@@ -122,7 +122,12 @@ class UserController extends Controller
 
     public function actionHash(): string
     {
-        return Auth::getPasswordHash($_GET['pass_string']);
+        if (!empty($_GET['pass_string'])) {
+            return Auth::getPasswordHash($_GET['pass_string']);
+        } else {
+            throw new \Exception("Невозможно сгенерировать хэш. Не передан пароль");
+        }
+
     }
 
     public function actionAuth(): string

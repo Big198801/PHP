@@ -20,6 +20,8 @@
       <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/lesson_03/vendor/composer" />
       <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/hwork_02/vendor/composer" />
       <path value="$PROJECT_DIR$/php-fpm-port/archive_lesson/hwork_03/vendor/composer" />
+      <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/php-fpm-port/code/vendor/psr/log" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

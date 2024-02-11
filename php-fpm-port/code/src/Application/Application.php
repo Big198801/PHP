@@ -2,6 +2,10 @@
 
 namespace Myproject\Application\Application;
 
+use Monolog\Handler\FirePHPHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
 use Myproject\Application\Domain\Controllers\Controller;
 use Myproject\Application\Infrastructure\Config;
 
@@ -14,11 +18,18 @@ final class Application
 
     public static Config $config;
     public static Auth $auth;
+    public static Logger $logger;
 
     public function __construct()
     {
         Application::$config = new Config();
         Application::$auth = new Auth();
+        Application::$logger = new Logger('application_logger');
+        Application::$logger->pushHandler(new StreamHandler(
+            $_SERVER['DOCUMENT_ROOT'] . "/log/" . Application::$config->get()['log']['LOGS_FILE'] . '-' . date("Y-m-d") . '.log',
+            Level::Debug
+        ));
+        Application::$logger->pushHandler(new FirePHPHandler());
     }
 
     public function run(): ?string
@@ -52,6 +63,10 @@ final class Application
                     if ($this->checkAccessToMethod($controllerInstance, $this->methodName)) {
                         return call_user_func_array([$controllerInstance, $this->methodName], []);
                     } else {
+                        $logMessage = 'Нет доступа к методу ' . $this->methodName . ' в контроллере ' . $this->controllerName;
+                        $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                        Application::$logger->error($logMessage);
+
                         throw new \Exception('Нет доступа к методу');
                     }
                 } else {

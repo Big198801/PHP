@@ -20,7 +20,13 @@
                 <p>{{ user.getUserLastname() }}</p>
             </li>
             <li class="list__flex">
-                <p>{{ user.getUserBirthday() | date('d.m.Y') }}</p>
+                <p>
+                    {% if user.getUserBirthday() is empty %}
+                        <b>не установлен</b>
+                    {% else %}
+                        {{ user.getUserBirthday() | date('d.m.Y') }}
+                    {% endif %}
+                </p>
             </li>
             <li>
                 <button onclick="showEdit({{ user.getUserId }})" class="list__btn" type="submit">&#9998;</button>
