@@ -14,6 +14,8 @@ try {
 
     $_SESSION['error_message'] = $e->getMessage();
 
-    header("Location: /page/index/?error=1");
+    $redirectURL = '/' . explode('/', $_SERVER['REQUEST_URI'])[1] . '/index/?error=1';
+
+    header("Location: $redirectURL");
     die();
 }

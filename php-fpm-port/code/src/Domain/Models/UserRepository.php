@@ -116,7 +116,6 @@ class UserRepository
             'current_date' => $currentMonthDay,
             'ten_days_later' => $tenDaysLater
         ]);
-
         return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
     }
 
@@ -138,7 +137,7 @@ class UserRepository
         }
     }
 
-    public static function getUserDataByID(int $userID): array {
+    public function getUserDataByID(int $userID): array {
         $sql = "SELECT * FROM users WHERE id_user = :id";
 
         $handler = Storage::getInstance()->prepare($sql);

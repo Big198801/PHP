@@ -23,7 +23,7 @@ class Render
     {
         $template = $this->environment->load($contentTemplateName);
 
-        if(isset($_SESSION['auth']['user_name'])){
+        if (isset($_SESSION['auth']['user_name'])) {
             $templateVariables['user_authorized'] = true;
             $templateVariables['user_name'] = $_SESSION['auth']['user_name'];
             $templateVariables['user_lastname'] = $_SESSION['auth']['user_lastname'];
@@ -34,6 +34,12 @@ class Render
         $templateVariables['metrik'] = $_COOKIE['metrik'];
 
         $templateVariables['time'] = date('d-m-Y H:i');
+
+        if (isset($_GET['error']) && $_GET['error']) {
+            $templateVariables['alert_message'] = $_SESSION['error_message'];
+            $templateVariables['alert_head'] = 'Ошибка';
+            $templateVariables['alert'] = true;
+        }
 
         return $template->render($templateVariables);
     }

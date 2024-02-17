@@ -115,17 +115,18 @@ class UserController extends Controller
 
     public function actionUpdate(): void
     {
-        if ($this->repository->exists($_GET['id'])) {
+        $id = $_GET['id'];
+        if ($this->repository->exists($id)) {
+
             $login = $_GET['login'] ?? '';
             $name = $_GET['name'] ?? '';
             $lastname = $_GET['lastname'] ?? '';
             $birthday = $_GET['birthday'] ?? '';
 
             $arrayData = $this->validate->validateUserData($login, $name, $lastname, $birthday);
-            $arrayKey['id_user'] = $_GET['id'];
+            $arrayKey['id_user'] = $id;
 
             if ($this->repository->updateData('users', $arrayData, $arrayKey)) {
-
                 $_SESSION['alert_message'] = "Пользователь изменен";
                 header("Location: /user/index/?alert=true");
                 die();
