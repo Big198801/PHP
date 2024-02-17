@@ -1,0 +1,39 @@
+<section class="operation">
+    <form class="form-span" action="/user/save/" method="post">
+        <fieldset>
+            <legend>Добавить пользователя</legend>
+            <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <div class="field">
+                <label for="name">Имя
+                    <input id="name" name="name" type="text" placeholder="Иван" required autofocus>
+                </label>
+                <label for="lastname">Фамилия
+                    <input id="lastname" name="lastname" type="text" placeholder="Иванов" required autofocus>
+                </label>
+                <label for="birthday"> Дата рождения
+                    <input id="birthday" name="birthday" placeholder="31-12-1970" type="text" required>
+                </label>
+            </div>
+            <div class="field">
+                <label for="login"> Логин
+                    <input id="login" name="login" placeholder="ivanIvanov" type="text" required>
+                </label>
+                <label for="password"> Пароль
+                    <input id="password" name="password" placeholder="*********" type="password" required>
+                </label>
+                <label for="confirm_password"> Подтверждение
+                    <input id="confirm_password" name="confirm_password" placeholder="*********" type="password"
+                           required>
+                </label>
+            </div>
+        </fieldset>
+        <button type="submit">Добавить</button>
+    </form>
+    <form action="/user/search/" method="get">
+        <fieldset>
+            <legend>День рождения</legend>
+            <p>Сегодня {{ "now"|date("d-m-Y") }} и +10 дней</p>
+        </fieldset>
+        <button type="submit">Показать</button>
+    </form>
+</section>

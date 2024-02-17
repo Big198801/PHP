@@ -1,10 +1,11 @@
-{% extends "main.twig" %}
+{% extends "layout-main/main.twig" %}
 
 {% block title %}Список пользователей в хранилище{% endblock %}
 
 {% block content %}
-    {% include 'user-function.twig' %}
+    {% include 'layout-user/user-function.twig' %}
     <ul class="list" id="navigation">
+        <li class="list__left">Логин</li>
         <li class="list__left">Имя</li>
         <li class="list__left">Фамилия</li>
         <li>День рождения</li>
@@ -13,6 +14,9 @@
         <li class="list__separator"></li>
         {% if users|length > 0 %}
             {% for user in users %}
+            <li class="list__left list__flex">
+                <p>{{ user.getLogin() }}</p>
+            </li>
             <li class="list__left list__flex">
                 <p>{{ user.getUserName() }}</p>
             </li>
@@ -30,7 +34,7 @@
             </li>
             <li>
                 <button onclick="showEdit({{ user.getUserId }})" class="list__btn" type="submit">&#9998;</button>
-                {% include 'user-update.twig' %}
+                {% include 'layout-user/user-update.twig' %}
             </li>
             <li>
                 <form action="/user/delete/" method="get">

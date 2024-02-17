@@ -16,7 +16,7 @@ class SiteController extends Controller
     public function actionInfo(): string
     {
         $info = new SiteInfo();
-        return $this->render->renderPage("site-info.twig", [
+        return $this->render->renderPage("page-info.twig", [
             'title' => 'Информация',
             'server' => $info->getWebServer(),
             'phpVersion' => $info->getPhpVersion(),

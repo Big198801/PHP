@@ -5,6 +5,7 @@ namespace Myproject\Application\Domain\Controllers;
 use Myproject\Application\Application\Render;
 use Myproject\Application\Domain\Models\UserRolesTrait;
 use Myproject\Application\Domain\Models\Validate;
+use Myproject\Application\Infrastructure\Storage;
 
 abstract class Controller
 {
@@ -24,8 +25,6 @@ abstract class Controller
 
         setcookie('metrik', $_COOKIE['metrik'], time() + 3600 * 24 * 7, '/');
     }
-
-    use UserRolesTrait;
 
     public function getActionsPermissions(string $methodName): array
     {

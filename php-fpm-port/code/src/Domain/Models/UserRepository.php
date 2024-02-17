@@ -61,30 +61,19 @@ class UserRepository
         return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');
     }
 
-    public function getAllUserCookie(string $cookie): ?array
-    {
-        if (!empty($cookie)) {
-            $sql = 'SELECT * FROM users WHERE remember_token = :remember_token';
-
-            $handler = Storage::getInstance()->prepare($sql);
-            $handler->bindValue(':remember_token', $cookie);
-            $handler->execute();
-            return $handler->fetchAll();
-        } else {
-            return null;
-        }
-    }
-
     public function saveUserFromStorage(User $user): void
     {
-        $sql = "INSERT INTO users(user_name, user_lastname, user_birthday_timestamp) VALUES (:user_name, :user_lastname, :user_birthday)";
+        $sql = "INSERT INTO users(user_name, user_lastname, user_birthday_timestamp, login, password_hash, remember_token) VALUES (:user_name, :user_lastname, :user_birthday, :login, :password, :token)";
 
         $handler = Storage::getInstance()->prepare($sql);
 
         $handler->execute([
             'user_name' => $user->getUserName(),
             'user_lastname' => $user->getUserLastname(),
-            'user_birthday' => $user->getUserBirthday()
+            'user_birthday' => $user->getUserBirthday(),
+            'login' => $user->getLogin(),
+            'password' => $user->getPasswordHash(),
+            'token' => $user->getRememberToken()
         ]);
     }
 
@@ -98,13 +87,7 @@ class UserRepository
             'id_user' => $id_user
         ]);
 
-        $rowCount = $handler->rowCount();
-
-        if ($rowCount === 0) {
-            return "Запись не существует";
-        } else {
-            return "Запись удалена успешно";
-        }
+        return "Запись удалена успешно";
     }
 
     public function clearUsersFromStorage(): string
@@ -155,6 +138,14 @@ class UserRepository
         }
     }
 
+    public static function getUserDataByID(int $userID): array {
+        $sql = "SELECT * FROM users WHERE id_user = :id";
+
+        $handler = Storage::getInstance()->prepare($sql);
+        $handler->execute(['id' => $userID]);
+        return $handler->fetch();
+    }
+
     public function updateData(string $tableName, array $userDataArray, array $whereData = []): bool
     {
         $count = count($userDataArray);
@@ -183,20 +174,57 @@ class UserRepository
         }
     }
 
-    public function setCookie(): void
+    public static function destroyToken(): array
     {
-        $token = bin2hex(random_bytes(32));
-        setcookie('remember_token', $token, time() + 3600 * 24 * 7, '/');
+        $userSql = "UPDATE users SET remember_token = :token WHERE id_user = :id";
 
-        $sql = 'UPDATE users SET remember_token = :remember_token WHERE id_user = :id_user';
+        $handler = Storage::getInstance()->prepare($userSql);
+        $handler->execute(['token' => md5(bin2hex(random_bytes(16))), 'id' => $_SESSION['auth']['id_user']]);
+        $result = $handler->fetchAll();
 
-        $handler = Storage::getInstance()->prepare($sql);
+        return $result[0] ?? [];
+    }
 
-        $updateValues = [
-            'remember_token' => $token,
-            'id_user' => $_SESSION['id_user']
-        ];
+    public static function verifyToken(string $token): array
+    {
+        $userSql = "SELECT * FROM users WHERE token = :token";
 
-        $handler->execute($updateValues);
+        $handler = Storage::getInstance()->prepare($userSql);
+        $handler->execute(['remember_token' => $token]);
+        $result = $handler->fetchAll();
+
+        return $result[0] ?? [];
+    }
+
+    public static function setToken(int $userID, string $token): void
+    {
+        $userSql = "UPDATE users SET token = :token WHERE id_user = :id";
+
+        $handler = Storage::getInstance()->prepare($userSql);
+        $handler->execute(['id' => $userID, 'remember_token' => $token]);
+
+        setcookie('auth_token', $token, time() + 60 * 60 * 24 * 30, '/'
+        );
+    }
+
+    public function getUserRoles(): array
+    {
+        $roles = [];
+        $roles[] = 'user';
+
+        if (isset($_SESSION['auth']['id_user'])) {
+            $rolesSql = "SELECT * FROM user_roles WHERE id_user = :id";
+
+            $handler = Storage::getInstance()->prepare($rolesSql);
+            $handler->execute(['id' => $_SESSION['auth']['id_user']]);
+            $result = $handler->fetchAll();
+
+            if (!empty($result)) {
+                foreach ($result as $role) {
+                    $roles[] = $role['role'];
+                }
+            }
+        }
+        return $roles;
     }
 }

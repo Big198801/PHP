@@ -2,11 +2,7 @@
 
 namespace Myproject\Application\Application;
 
-use Random\RandomException;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
 
 class Render
@@ -27,9 +23,10 @@ class Render
     {
         $template = $this->environment->load($contentTemplateName);
 
-        if (isset($_SESSION['user_name'])) {
+        if(isset($_SESSION['auth']['user_name'])){
             $templateVariables['user_authorized'] = true;
-            $templateVariables['user_name'] = $_SESSION['user_name'];
+            $templateVariables['user_name'] = $_SESSION['auth']['user_name'];
+            $templateVariables['user_lastname'] = $_SESSION['auth']['user_lastname'];
         }
 
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -38,19 +35,12 @@ class Render
 
         $templateVariables['time'] = date('d-m-Y H:i');
 
-        /* временный код
-        ob_start();
-        \xdebug_info();
-        $xdebug = ob_get_clean();
-        $templateVariables['xdebug'] = $xdebug;
-        */
-
         return $template->render($templateVariables);
     }
 
     public function renderPageWithForm(array $templateVariables = []): string
     {
-        $template = $this->environment->load('user-login.twig');
+        $template = $this->environment->load('page-login.twig');
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         $templateVariables['csrf_token'] = $_SESSION['csrf_token'];;

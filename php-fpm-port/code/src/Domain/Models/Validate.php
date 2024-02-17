@@ -2,6 +2,8 @@
 
 namespace Myproject\Application\Domain\Models;
 
+use Myproject\Application\Application\Application;
+
 class Validate
 {
     public function validateRequestData(array $requestData): bool
@@ -12,10 +14,45 @@ class Validate
             if ($fieldName === 'name' || $fieldName === 'lastname') {
                 if ($this->validateNameOrLastname($fieldValue)) {
                     $validFields++;
+                } else {
+                    $logMessage = 'При добавлении пользователя неверно указали Имя или Фамилию';
+                    $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                    Application::$logger->error($logMessage);
+                    throw new \Exception("Неверное Имя или Фамилия");
                 }
-            } elseif ($fieldName === 'date') {
+            } elseif ($fieldName === 'birthday') {
                 if ($this->validateDate($fieldValue)) {
                     $validFields++;
+                } else {
+                    $logMessage = 'При добавлении пользователя неверно указали Дату рождения';
+                    $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                    Application::$logger->error($logMessage);
+                    throw new \Exception("Неверная Дата рождения");
+                }
+            } elseif ($fieldName === 'login') {
+                if ($this->validateLogin($fieldValue)) {
+                    $validFields++;
+                } else {
+                    $logMessage = 'При добавлении пользователя неверно указали Логин';
+                    $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                    Application::$logger->error($logMessage);
+                    throw new \Exception("Неверный Логин");
+                }
+            } elseif ($fieldName === 'password') {
+                if ($fieldValue[0] === $fieldValue[1]) {
+                    if ($this->validatePassword($fieldValue[0])) {
+                        $validFields++;
+                    } else {
+                        $logMessage = 'При добавлении пользователя неверно указали Пароль';
+                        $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                        Application::$logger->error($logMessage);
+                        throw new \Exception("Неверный пароль");
+                    }
+                } else {
+                    $logMessage = 'При добавлении пользователя пароли не совпали';
+                    $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                    Application::$logger->error($logMessage);
+                    throw new \Exception("Пароли не совпадают");
                 }
             }
         }
@@ -27,9 +64,13 @@ class Validate
         return $validFields === count($requestData);
     }
 
-    public function validateUserData(string $name, string $lastname, string $birthday): array
+    public function validateUserData(string $login, string $name, string $lastname, string $birthday): array
     {
         $validatedData = [];
+
+        if ($this->validateLogin($login)) {
+            $validatedData['login'] = $login;
+        }
 
         if ($this->validateNameOrLastname($name)) {
             $validatedData['user_name'] = $name;
@@ -46,15 +87,21 @@ class Validate
         return $validatedData;
     }
 
-    public function validateNameOrLastname(string $data): bool
+    private function validateLogin(string $data): bool
     {
         $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-        return (!empty($data) && preg_match("/^[-A-Za-zА-Яа-яЁё]+$/u", $data));
+        return (!empty($data) && preg_match("/^[a-zA-Z0-9_-]{3,20}$/", $data) && !preg_match("/<[^>]*>/", $data));
     }
 
-    public function validateDate(string $date): bool
+    private function validateNameOrLastname(string $data): bool
     {
-        if (empty($data) && !preg_match('/^(\d{2}-\d{2}-\d{4})$/', $date)) {
+        $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+        return (!empty($data) && preg_match("/^[-A-Za-zА-Яа-яЁё]+$/u", $data) && !preg_match("/<[^>]*>/", $data));
+    }
+
+    private function validateDate(string $date): bool
+    {
+        if (empty($date) && !preg_match('/^(\d{2}-\d{2}-\d{4})$/', $date)) {
             return false;
         }
 
@@ -89,9 +136,9 @@ class Validate
         return true;
     }
 
-    public function validatePassword(string $password): bool
+    private function validatePassword(string $password): bool
     {
         $pattern = "/^(?=.*\d)(?=.*[A-Za-z])(?=.*[^\s\w])(^\S{8,16})$/";
-        return (!empty($data) && preg_match($pattern, $password));
+        return (!empty($password) && preg_match($pattern, $password));
     }
 }

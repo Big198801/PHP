@@ -2,6 +2,8 @@
 
 namespace Myproject\Application\Domain\Models;
 
+use Myproject\Application\Application\Application;
+use Myproject\Application\Application\Auth;
 use Myproject\Application\Infrastructure\Storage;
 
 class User
@@ -77,10 +79,28 @@ class User
         $this->user_birthday_timestamp = strtotime($user_birthday_timestamp);
     }
 
-    public function setParamsFromRequestData(string $name, string $lastname, string $date): void
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    public function getPasswordHash(): ?string
+    {
+        return $this->password_hash;
+    }
+
+    public function getRememberToken(): ?string
+    {
+        return $this->remember_token;
+    }
+
+    public function setParamsFromRequestData(string $name, string $lastname, string $date, string $login, string $password): void
     {
         $this->user_name = htmlspecialchars($name);
         $this->user_lastname = htmlspecialchars($lastname);
         $this->setUserBirthday($date);
+        $this->login = htmlspecialchars($login);
+        $this->password_hash = Auth::getPasswordHash($password);
+        $this->remember_token = Application::$auth->generateToken();
     }
 }

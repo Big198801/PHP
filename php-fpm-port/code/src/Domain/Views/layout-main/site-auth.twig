@@ -1,6 +1,6 @@
 {% if not user_authorized %}
     <p><a class="glow" href="/user/auth"><span>Вход в систему</span></a></p>
 {% else %}
-    <p>Пользователь: {{ user_name }}</p>
+    <p>Пользователь: {{ user_name }} {{ user_lastname }}</p>
     <p><a class="glow" href="/user/logout"><span>Выход из системы</span></a></p>
 {% endif %}

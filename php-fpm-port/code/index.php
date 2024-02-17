@@ -7,9 +7,13 @@ use Myproject\Application\Application\Render;
 
 try {
     $app = new Application();
-    echo $app->run();
+    $result = $app->runApp();
+
+    echo $result;
 } catch (\Exception $e) {
+
     $_SESSION['error_message'] = $e->getMessage();
+
     header("Location: /page/index/?error=1");
     die();
 }
