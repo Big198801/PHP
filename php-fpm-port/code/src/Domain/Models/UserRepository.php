@@ -46,16 +46,22 @@ class UserRepository
         return $pageNumbers;
     }
 
-    public function getAllUsersFromStorage(int $currentPage): ?array
+    public function getAllUsersFromStorage(int $currentPage, ?int $limit = null): ?array
     {
         $itemsPerPage = 10;
         $offset = ($currentPage - 1) * $itemsPerPage;
 
-        $sql = "SELECT * FROM users ORDER BY id_user DESC LIMIT :limit OFFSET :offset";
+        $sql = "SELECT * FROM users";
 
-        $handler = Storage::getInstance()->prepare($sql);
-        $handler->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
-        $handler->bindValue(':offset', $offset, PDO::PARAM_INT);
+        if (isset($limit) && $limit > 0) {
+            $sql .= " WHERE id_user > " . (int)$limit;
+            $handler = Storage::getInstance()->prepare($sql);
+        } else {
+            $sql .= " ORDER BY id_user DESC LIMIT :limit OFFSET :offset";
+            $handler = Storage::getInstance()->prepare($sql);
+            $handler->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
+            $handler->bindValue(':offset', $offset, PDO::PARAM_INT);
+        }
         $handler->execute();
 
         return $handler->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Myproject\Application\Domain\Models\User');

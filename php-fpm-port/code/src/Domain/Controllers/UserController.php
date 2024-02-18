@@ -13,7 +13,8 @@ class UserController extends Controller
     protected UserRepository $repository;
 
     protected array $actionsPermissions = [
-        'actionIndex' => ['admin', 'user'],
+        'actionIndex' => ['admin'],
+        'actionIndexRefresh' => ['admin'],
         'actionHash' => ['admin', 'user'],
         'actionAuth' => ['admin', 'user'],
         'actionLogin' => ['admin', 'user'],
@@ -46,6 +47,26 @@ class UserController extends Controller
                 'pages' => $this->repository->generatePageNumbers($currentPage),
                 'current_page' => $currentPage
             ]);
+    }
+
+    public function actionIndexRefresh(): string
+    {
+        $limit = null;
+
+        if (isset($_POST['maxId']) && ($_POST['maxId'] > 0)) {
+            $limit = $_POST['maxId'];
+        }
+
+        $users = $this->repository->getAllUsersFromStorage(1, $limit);
+
+        $usersData = [];
+
+        if (count($users) > 0) {
+            foreach ($users as $user) {
+                $usersData[] = $user->getUserDataArray();
+            }
+        }
+        return json_encode($usersData);
     }
 
     public function actionSave(): void

@@ -103,4 +103,15 @@ class User
         $this->password_hash = Auth::getPasswordHash($password);
         $this->remember_token = Application::$auth->generateToken();
     }
+
+    public function getUserDataArray() : array
+    {
+        return [
+            'id' => $this->id_user,
+            'login' => $this->login,
+            'user_name' => $this->user_name,
+            'user_lastname' => $this->user_lastname,
+            'user_birthday' => date('d-m-Y', $this->user_birthday_timestamp)
+        ];
+    }
 }

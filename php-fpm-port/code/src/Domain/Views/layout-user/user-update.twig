@@ -14,7 +14,7 @@
             <input id="birthday" name="birthday"
                    value={{ user.getUserBirthday() | date('d-m-Y') }} type="text">
         </label>
-        <input type="hidden" name="id" value="{{ user.getUserId }}">
+        <input type="hidden" name="id" value={{ user.getUserId }}>
         <div class="alert__btn">
             <button onclick="hideEdit({{ user.getUserId }})" type="button">Отмена</button>
             <button type="submit">Изменить</button>
