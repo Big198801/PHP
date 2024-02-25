@@ -85,6 +85,10 @@ class UserRepository
 
     public function deleteUserFromStorage(int $id_user): string
     {
+        if ($id_user === $_SESSION['auth']['id_user']) {
+            return "Ты что? Себя удалить нельзя";
+        }
+
         $sql = "DELETE FROM users WHERE id_user = :id_user";
 
         $handler = Storage::getInstance()->prepare($sql);
@@ -192,10 +196,10 @@ class UserRepository
 
     public static function verifyToken(string $token): array
     {
-        $userSql = "SELECT * FROM users WHERE token = :token";
+        $userSql = "SELECT * FROM users WHERE remember_token = :token";
 
         $handler = Storage::getInstance()->prepare($userSql);
-        $handler->execute(['remember_token' => $token]);
+        $handler->execute(['token' => $token]);
         $result = $handler->fetchAll();
 
         return $result[0] ?? [];
@@ -203,19 +207,17 @@ class UserRepository
 
     public static function setToken(int $userID, string $token): void
     {
-        $userSql = "UPDATE users SET token = :token WHERE id_user = :id";
+        $userSql = "UPDATE users SET remember_token = :token WHERE id_user = :id";
 
         $handler = Storage::getInstance()->prepare($userSql);
-        $handler->execute(['id' => $userID, 'remember_token' => $token]);
+        $handler->execute(['id' => $userID, 'token' => $token]);
 
-        setcookie('auth_token', $token, time() + 60 * 60 * 24 * 30, '/'
-        );
+        setcookie('auth_token', $token, time() + 60 * 60 * 24 * 30, '/');
     }
 
     public function getUserRoles(): array
     {
         $roles = [];
-        $roles[] = 'user';
 
         if (isset($_SESSION['auth']['id_user'])) {
             $rolesSql = "SELECT * FROM user_roles WHERE id_user = :id";
@@ -228,7 +230,10 @@ class UserRepository
                 foreach ($result as $role) {
                     $roles[] = $role['role'];
                 }
+                $_SESSION['auth']['hasAccess'] = $roles;
             }
+        } else {
+            $roles[] = 'user';
         }
         return $roles;
     }

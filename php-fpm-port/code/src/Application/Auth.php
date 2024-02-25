@@ -12,11 +12,12 @@ class Auth
         return password_hash($rawPassword, PASSWORD_BCRYPT);
     }
 
-    public function restoreSession(): void{
-        if(isset($_COOKIE['auth_token']) && !isset($_SESSION['auth']['user_name'])){
+    public function restoreSession(): void
+    {
+        if (isset($_COOKIE['auth_token']) && !isset($_SESSION['auth']['user_name'])) {
             $userData = (new UserRepository())::verifyToken($_COOKIE['auth_token']);
 
-            if(!empty($userData)){
+            if (!empty($userData)) {
                 $_SESSION['auth']['user_name'] = $userData['user_name'];
                 $_SESSION['auth']['user_lastname'] = $userData['user_lastname'];
                 $_SESSION['auth']['id_user'] = $userData['id_user'];
@@ -24,7 +25,8 @@ class Auth
         }
     }
 
-    public static function generateToken(): string {
+    public static function generateToken(): string
+    {
         $bytes = random_bytes(16);
         return bin2hex($bytes);
     }

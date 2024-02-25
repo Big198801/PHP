@@ -1,17 +1,17 @@
 <div class="alert" id="form{{ user.getUserId }}">
     <form class="alert__box" action="/user/update/" method="get">
         <h5 class="alert__heading">Изменить пользователя</h5>
-        <label for="login">Логин
-            <input id="login" name="login" type="text" value={{ user.getLogin() }}>
+        <label for="edit_login">Логин
+            <input id="edit_login" name="login" type="text" value={{ user.getLogin() }}>
         </label>
-        <label for="name">Имя
-            <input id="name" name="name" type="text" value={{ user.getUserName() }}>
+        <label for="edit_name">Имя
+            <input id="edit_name" name="name" type="text" value={{ user.getUserName() }}>
         </label>
-        <label for="lastname">Фамилия
-            <input id="lastname" name="lastname" type="text" value={{ user.getUserLastname() }}>
+        <label for="edit_lastname">Фамилия
+            <input id="edit_lastname" name="lastname" type="text" value={{ user.getUserLastname() }}>
         </label>
-        <label for="birthday"> Дата рождения
-            <input id="birthday" name="birthday"
+        <label for="edit_birthday"> Дата рождения
+            <input id="edit_birthday" name="birthday"
                    value={{ user.getUserBirthday() | date('d-m-Y') }} type="text">
         </label>
         <input type="hidden" name="id" value={{ user.getUserId }}>

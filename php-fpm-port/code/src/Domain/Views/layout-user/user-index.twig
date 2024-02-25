@@ -4,26 +4,32 @@
 
 {% block content %}
     {% include 'layout-user/user-function.twig' %}
-    <ul class="list" id="navigation">
+    <ul class="list {% if hasAdmin %}list_admin{% else %}list_user{% endif %}" id="navigation">
         <li class="list__left">Логин</li>
         <li class="list__left">Имя</li>
         <li class="list__left">Фамилия</li>
         <li>День рождения</li>
-        <li>Редактировать</li>
-        <li>Удалить</li>
-        <li class="list__separator"></li>
+
+        {% if hasAdmin %}
+            <li>Редактировать</li>
+            <li>Удалить</li>
+            <li class="list__separator list__separator_admin"></li>
+        {% else %}
+            <li class="list__separator list__separator_user"></li>
+        {% endif %}
+
         {% if users|length > 0 %}
             {% for user in users %}
-            <li class="list__left list__flex">
+            <li id="{{ user.getUserId }}" class="list__left list__flex">
                 <p>{{ user.getLogin() }}</p>
             </li>
-            <li class="list__left list__flex">
+            <li id="{{ user.getUserId }}" class="list__left list__flex">
                 <p>{{ user.getUserName() }}</p>
             </li>
-            <li class="list__left list__flex">
+            <li id="{{ user.getUserId }}" class="list__left list__flex">
                 <p>{{ user.getUserLastname() }}</p>
             </li>
-            <li class="list__flex">
+            <li id="{{ user.getUserId }}" class="list__flex">
                 <p>
                     {% if user.getUserBirthday() is empty %}
                         <b>не установлен</b>
@@ -32,16 +38,17 @@
                     {% endif %}
                 </p>
             </li>
-            <li>
+        {% if hasAdmin %}
+            <li id="{{ user.getUserId }}">
                 <button onclick="showEdit({{ user.getUserId }})" class="list__btn" type="submit">&#9998;</button>
                 {% include 'layout-user/user-update.twig' %}
             </li>
-            <li>
-                <form action="/user/delete/" method="get">
-                    <input id="{{ user.getUserId }}" type="hidden" name="id" value={{ user.getUserId }}>
+            <li id="{{ user.getUserId }}">
+                <form onsubmit="userDelete({{ user.getUserId }}, event)" method="get">
                     <button class="list__btn" type="submit">х</button>
                 </form>
             </li>
+        {% endif %}
             {% endfor %}
         {% else %}
             <script type="text/javascript">
@@ -65,61 +72,6 @@
         <form action="/user/clear/" method="get">
             <button type="submit">Очистить базу</button>
         </form>
-
-        <script>
-            const searchMaxId = () => {
-                let inputs = document.querySelectorAll('input');
-                let max = 0;
-
-                inputs.forEach(function(input) {
-                    let id = parseInt(input.id);
-                    if (id > max) {
-                        max = id;
-                    }
-                });
-
-                return max;
-            }
-
-            let maxId = searchMaxId();
-
-            setInterval(() => {
-                jQuery.ajax({
-                    method: 'POST',
-                    url: '/user/indexRefresh',
-                    data: {maxId : maxId}
-                }).done(function(data) {
-                    // data - JSON response
-                    // k => [id, login, user_name, user_lastname, user_birthday]
-                    let users = $.parseJSON(data);
-
-                    if (users.length !== 0) {
-                        for (let k in users) {
-                            let update = '<div class="alert" id="form' + users[k].id + '"><form class="alert__box" action="/user/update/" method="get">';
-                            maxId = users[k].id;
-                            update += '<h5 class="alert__heading">Изменить пользователя</h5>';
-                            update += '<label for="login">Логин<input id="login" name="login" type="text" value=' + users[k].login + '></label>';
-                            update += '<label for="name">Имя<input id="name" name="name" type="text" value=' + users[k].user_name + '></label>';
-                            update += '<label for="lastname">Фамилия<input id="lastname" name="lastname" type="text" value=' + users[k].user_lastname + '></label>';
-                            update += '<label for="birthday"> Дата рождения<input id="birthday" name="birthday" value=' + users[k].user_birthday + ' type="text"></label>';
-                            update += '<input type="hidden" name="id" value=' + users[k].id + '>';
-                            update += '<div class="alert__btn"><button onclick="hideEdit(' + users[k].id + ')" type="button">Отмена</button>';
-                            update += '<button type="submit">Изменить</button></div></form></div>';
-
-                            let row = '<li class="list__left list__flex"><p>' + users[k].login + '</p></li>';
-                            row += '<li class="list__left list__flex"><p>' + users[k].user_name + '</p></li>';
-                            row += '<li class="list__left list__flex"><p>' + users[k].user_lastname + '</p></li>';
-                            row += '<li class="list__flex"><p>' + users[k].user_birthday + '</p></li>';
-                            row += '<li><button onclick="showEdit(' + users[k].id + ')" class="list__btn" type="submit">&#9998;</button>' + update + '</li>';
-                            row += '<li><form action="/user/delete/" method="get"><input id=' + users[k].id + ' type="hidden" name="id" value=' + users[k].id + '>';
-                            row += '<button class="list__btn" type="submit">х</button></form></li>';
-
-                            $('.list__separator').after(row);
-                        }
-                    }
-                })
-            }, 10000);
-        </script>
     </div>
 {% endblock %}
 

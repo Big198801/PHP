@@ -15,7 +15,7 @@ class Render
     {
         $this->loader = new FilesystemLoader($_SERVER['DOCUMENT_ROOT'] . '/../' . $this->viewFolder);
         $this->environment = new Environment($this->loader, [
-            'cache' => $_SERVER['DOCUMENT_ROOT'] . '/../' . '/cache/',
+            // 'cache' => $_SERVER['DOCUMENT_ROOT'] . '/../' . '/cache/',
         ]);
     }
 
@@ -33,7 +33,11 @@ class Render
         $templateVariables['csrf_token'] = $_SESSION['csrf_token'];
         $templateVariables['metrik'] = $_COOKIE['metrik'];
 
-        $templateVariables['time'] = date('d-m-Y H:i');
+        if (isset($_SESSION['auth']['hasAccess'])) {
+            $templateVariables['hasAdmin'] = in_array('admin', $_SESSION['auth']['hasAccess'], true);
+        }
+
+        $templateVariables['time'] = date('d-m-Y H:i:s');
 
         if (isset($_GET['error']) && $_GET['error']) {
             $templateVariables['alert_message'] = $_SESSION['error_message'];

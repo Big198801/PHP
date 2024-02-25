@@ -9,10 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-    <script
-            src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/style/style.css?v={{ random() }}">
 </head>
 <body>
@@ -31,6 +27,16 @@
     {% include 'layout-main/site-footer.twig' %}
 </div>
 {% include 'layout-main/site-alert.twig' %}
-<script src="/script/script.js"></script>
+<script src="/script/script.js?v={{ random() }}"></script>
+<script>
+    setInterval(() => {
+        (
+            async () => {
+                const response = await fetch('/page/time');
+                document.querySelector('#time').textContent = await response.json();
+            }
+        )();
+    }, 1000)
+</script>
 </body>
 </html>

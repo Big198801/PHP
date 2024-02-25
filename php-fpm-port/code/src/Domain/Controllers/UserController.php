@@ -13,9 +13,8 @@ class UserController extends Controller
     protected UserRepository $repository;
 
     protected array $actionsPermissions = [
-        'actionIndex' => ['admin'],
-        'actionIndexRefresh' => ['admin'],
-        'actionHash' => ['admin', 'user'],
+        'actionIndex' => ['admin', 'user'],
+        'actionIndexRefresh' => ['admin', 'user'],
         'actionAuth' => ['admin', 'user'],
         'actionLogin' => ['admin', 'user'],
         'actionLogout' => ['admin', 'user'],
@@ -69,7 +68,7 @@ class UserController extends Controller
         return json_encode($usersData);
     }
 
-    public function actionSave(): void
+    public function actionSave(): string|false
     {
         $user = new User();
         $name = $_POST['name'] ?? '';
@@ -90,30 +89,26 @@ class UserController extends Controller
             $user->setParamsFromRequestData($name, $lastname, $birthday, $login, $password);
             $this->repository->saveUserFromStorage($user);
 
-            $_SESSION['alert_message'] = "Пользователь добавлен";
-            header("Location: /user/index/?alert=true");
-            die();
+            return json_encode($user->getUserDataArray());
+
         } else {
-            $logMessage = 'При добавлении пользователя не корректные данные';
-            $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
-            Application::$logger->error($logMessage);
-            throw new \Exception("Данные не корректны");
+            return json_encode(['error' => $_SESSION['error_message']]);
         }
     }
 
-    #[NoReturn] public function actionDelete(): void
+    #[NoReturn] public function actionDelete(): string|false
     {
         $id = $_GET['id'];
         if ($this->repository->exists($id)) {
             $_SESSION['alert_message'] = $this->repository->deleteUserFromStorage($id);
-            header("Location: /user/index/?alert=true");
-            die();
+
+            return json_encode(['message' => $_SESSION['alert_message']]);
 
         } else {
             $logMessage = 'При удалении пользователь в базе осутствует';
             $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
             Application::$logger->error($logMessage);
-            throw new \Exception("Данный пользователь не найден");
+            return json_encode(['message' => 'Пользователь в базе осутствует']);
         }
     }
 
@@ -180,7 +175,7 @@ class UserController extends Controller
             $result = Application::$auth->proceedAuth($_POST['login'], $_POST['password']);
 
             if($result &&
-                isset($_POST['user-remember']) && $_POST['user-remember'] == 'remember'){
+                isset($_POST['remember']) && $_POST['remember'] == 'remember'){
                 $token = Application::$auth->generateToken();
 
                 UserRepository::setToken($_SESSION['auth']['id_user'], $token);

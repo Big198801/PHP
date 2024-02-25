@@ -14,6 +14,8 @@ class Validate
             if ($fieldName === 'name' || $fieldName === 'lastname') {
                 if ($this->validateNameOrLastname($fieldValue)) {
                     $validFields++;
+                } else {
+                    return false;
                 }
             } elseif ($fieldName === 'birthday') {
                 if ($this->validateDate($fieldValue)) {
@@ -22,22 +24,36 @@ class Validate
                     $logMessage = 'При добавлении пользователя неверно указали Дату рождения';
                     $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                     Application::$logger->error($logMessage);
-                    throw new \Exception("Неверная Дата рождения");
+                    $_SESSION['error_message'] = 'Неверная Дата рождения';
+                    return false;
                 }
             } elseif ($fieldName === 'login') {
                 if ($this->validateLogin($fieldValue)) {
                     $validFields++;
+                } else {
+                    return false;
                 }
             } elseif ($fieldName === 'password') {
                 if ($fieldValue[0] === $fieldValue[1]) {
                     if ($this->validatePassword($fieldValue[0])) {
                         $validFields++;
+                    } else {
+                        return false;
                     }
+                } else {
+                    $logMessage = 'Проверка Пароля: Пароли не равны' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+                    Application::$logger->error($logMessage);
+                    $_SESSION['error_message'] = 'Пароль: пароли не равны';
+                    return false;
                 }
             }
         }
 
         if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token'] != $_POST['csrf_token']) {
+            $logMessage = 'При добавлении пользователя не совпал csrf-token ' . $_SESSION['csrf_token'] . " " . $_POST['csrf_token'];
+            $logMessage .= " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
+            Application::$logger->error($logMessage);
+            $_SESSION['error_message'] = 'Не совпал csrf-token';
             return false;
         }
 
@@ -78,22 +94,26 @@ class Validate
                     } else {
                         $logMessage = 'Проверка логина: передаете тэги' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                         Application::$logger->error($logMessage);
-                        throw new \Exception("Логин: не соотевтсвие длины");
+                        $_SESSION['error_message'] = 'Логин: не соотевтсвие длины';
+                        return false;
                     }
                 } else {
                     $logMessage = 'Проверка логина: не соотевтсвие длины' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                     Application::$logger->error($logMessage);
-                    throw new \Exception("Логин: не соотевтсвие длины");
+                    $_SESSION['error_message'] = 'Логин: не соотевтсвие длины';
+                    return false;
                 }
             } else {
                 $logMessage = 'Проверка логина: неверные знаки' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                 Application::$logger->error($logMessage);
-                throw new \Exception("Логин: отсутствие букв");
+                $_SESSION['error_message'] = 'Логин: отсутствие букв';
+                return false;
             }
         } else {
             $logMessage = 'Проверка логина: пустое значение' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
             Application::$logger->error($logMessage);
-            throw new \Exception("Логин: пусто");
+            $_SESSION['error_message'] = 'Логин: пусто';
+            return false;
         }
     }
 
@@ -101,23 +121,26 @@ class Validate
     {
         $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
         if (!empty($data)) {
-            if (preg_match("/[-A-Za-zА-Яа-яЁё]+$/", $data)) {
+            if (preg_match("/[-A-Za-zА-Яа-яЁёЖж]+$/", $data)) {
                 if (!preg_match("/<[^>]*>/", $data)) {
                     return true;
                 } else {
                     $logMessage = 'Проверка ФИО: передаете тэги' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                     Application::$logger->error($logMessage);
-                    throw new \Exception("ФИО: не соотевтсвие длины");
+                    $_SESSION['error_message'] = 'ФИО: не соотевтсвие длины';
+                    return false;
                 }
             } else {
                 $logMessage = 'Проверка ФИО: неверные знаки' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                 Application::$logger->error($logMessage);
-                throw new \Exception("ФИО: отсутствие букв");
+                $_SESSION['error_message'] = 'ФИО: отсутствие букв';
+                return false;
             }
         } else {
             $logMessage = 'Проверка ФИО: пустое значение' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
             Application::$logger->error($logMessage);
-            throw new \Exception("ФИО: пусто");
+            $_SESSION['error_message'] = 'ФИО: пусто';
+            return false;
         }
     }
 
@@ -154,17 +177,20 @@ class Validate
                 } else {
                     $logMessage = 'Проверка даты: неферный формат' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                     Application::$logger->error($logMessage);
-                    throw new \Exception("Дата неферный формат");
+                    $_SESSION['error_message'] = 'Дата неферный формат';
+                    return false;
                 }
             } else {
                 $logMessage = 'Проверка даты: неверные знаки' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                 Application::$logger->error($logMessage);
-                throw new \Exception("Дата: неверные знаки");
+                $_SESSION['error_message'] = 'Дата: неверные знаки';
+                return false;
             }
         } else {
             $logMessage = 'Проверка даты: пустое значение' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
             Application::$logger->error($logMessage);
-            throw new \Exception("Дата: пусто");
+            $_SESSION['error_message'] = 'Дата: пусто';
+            return false;
         }
     }
 
@@ -179,27 +205,32 @@ class Validate
                         } else {
                             $logMessage = 'Проверка пароля: не соотевтсвие длины' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                             Application::$logger->error($logMessage);
-                            throw new \Exception("Пароль: не соотевтсвие длины");
+                            $_SESSION['error_message'] = 'Пароль: не соотевтсвие длины';
+                            return false;
                         }
                     } else {
                         $logMessage = 'Проверка пароля: отсутствие спецзнака' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                         Application::$logger->error($logMessage);
-                        throw new \Exception("Пароль: отсутствие спецзнака");
+                        $_SESSION['error_message'] = 'Пароль: отсутствие спецзнака';
+                        return false;
                     }
                 } else {
                     $logMessage = 'Проверка пароля: отсутствие букв' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                     Application::$logger->error($logMessage);
-                    throw new \Exception("Пароль: отсутствие букв");
+                    $_SESSION['error_message'] = 'Пароль: отсутствие букв';
+                    return false;
                 }
             } else {
                 $logMessage = 'Проверка пароля: отсутствие цифр' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
                 Application::$logger->error($logMessage);
-                throw new \Exception("Пароль: отсутствие цифр");
+                $_SESSION['error_message'] = 'Пароль: отсутствие цифр';
+                return false;
             }
         } else {
             $logMessage = 'Проверка пароля: пустое значение' . " | " . "Попытка вызова адреса " . $_SERVER['REQUEST_URI'];
             Application::$logger->error($logMessage);
-            throw new \Exception("Пароль: пусто");
+            $_SESSION['error_message'] = 'Пароль: пусто';
+            return false;
         }
     }
 }

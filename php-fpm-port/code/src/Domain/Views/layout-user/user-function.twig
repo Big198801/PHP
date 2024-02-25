@@ -1,5 +1,5 @@
 <section class="operation">
-    <form class="form-span" action="/user/save/" method="post">
+    <form class="form-span" onsubmit="actionUser(event)" method="post">
         <fieldset>
             <legend>Добавить пользователя</legend>
             <input id="csrf_token" type="hidden" name="csrf_token" value="{{ csrf_token }}">
@@ -26,6 +26,7 @@
                            required>
                 </label>
             </div>
+            <p id="error_save" class="error_save"></p>
         </fieldset>
         <button type="submit">Добавить</button>
     </form>

@@ -115,16 +115,14 @@ final class Application
     {
         $userRoles = (new UserRepository())->getUserRoles();
         $rules = $controllerInstance->getActionsPermissions($methodName);
-        $isAllowed = false;
 
         if (!empty($rules)) {
-            foreach ($rules as $rolePermission) {
-                if (in_array($rolePermission, $userRoles)) {
-                    $isAllowed = true;
-                    break;
-                }
+            $intersect = array_intersect($rules, $userRoles);
+            if (!empty($intersect)) {
+                return true;
             }
         }
-        return $isAllowed;
+
+        return false;
     }
 }
